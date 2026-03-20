@@ -69,6 +69,24 @@
       height: calc(100vh - 145px);
     }
 
+    .location-list {
+      margin: 14px 0 0;
+      padding-left: 18px;
+      color: #444;
+      line-height: 1.5;
+    }
+
+    .location-badge {
+      display: inline-block;
+      background: #fff4e5;
+      border: 1px solid #ffd7a3;
+      color: #8a4b00;
+      border-radius: 999px;
+      padding: 5px 10px;
+      font-size: 12px;
+      margin-bottom: 10px;
+    }
+
     #map {
       height: 100%;
       width: 100%;
@@ -144,14 +162,12 @@
 <body>
   <header>
     <h1>Counties I’ve Visited</h1>
-    <p>Click a county to see photos and notes. Turn on selection mode to mark counties you’ve been to.</p>
+    <p>Click a county to see photos and notes. Turn on selection mode if you want to fine-tune your visited counties.</p>
 
     <div id="topbar">
       <button id="toggleSelectionBtn">Enable selection mode</button>
-      <button id="exportBtn">Export visited counties</button>
-      <button id="copyBtn">Copy export</button>
-      <button id="clearBtn">Clear all selected</button>
-      <div class="pill" id="countPill">Visited counties: 2</div>
+      <button id="copyBtn">Copy county list</button>
+      <div class="pill" id="countPill">Visited counties: 0</div>
     </div>
   </header>
 
@@ -164,7 +180,11 @@
         Normal mode: click a green county to see photos and notes.<br/><br/>
         Selection mode: click counties to turn them visited or unvisited.
       </p>
-      <textarea id="exportBox" placeholder="Your exported visited counties JSON will appear here."></textarea>
+      <div class="location-badge">Highlighted trip stops</div>
+      <ul class="location-list">
+        <li>Major cities and park areas are marked with map callouts.</li>
+        <li>Use Copy county list anytime to copy your current visited-county data.</li>
+      </ul>
     </aside>
   </div>
 
@@ -209,7 +229,11 @@
       "55089", "55101", "55105", "55109", "55111", "55117", "55127", "55131", "55133", "55139"
     ];
 
-    const map = L.map("map").setView([39.5, -98.35], 4);
+    const map = L.map("map");
+    map.fitBounds([
+      [24.5, -125.0],
+      [49.5, -66.5]
+    ]);
 
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       maxZoom: 18,
@@ -218,9 +242,55 @@
 
     let selectionMode = false;
     const selectedCountyIds = new Set(initialVisitedCountyIds);
-    const exportBox = document.getElementById("exportBox");
     const countPill = document.getElementById("countPill");
     const toggleSelectionBtn = document.getElementById("toggleSelectionBtn");
+
+    const highlightedLocations = [
+      { countyId: "32003", label: "Las Vegas", lat: 36.1699, lng: -115.1398 },
+      { countyId: "48113", label: "Dallas", lat: 32.7767, lng: -96.7970 },
+      { countyId: "48453", label: "Austin", lat: 30.2672, lng: -97.7431 },
+      { countyId: "48201", label: "Houston", lat: 29.7604, lng: -95.3698 },
+      { countyId: "06073", label: "San Diego", lat: 32.7157, lng: -117.1611 },
+      { countyId: "06043", label: "Yosemite", lat: 37.7456, lng: -119.5936 },
+      { countyId: "06027", label: "Death Valley", lat: 36.5323, lng: -116.9325 },
+      { countyId: "15009", label: "Maui", lat: 20.7984, lng: -156.3319 },
+      { countyId: "06017", label: "Lake Tahoe", lat: 38.9399, lng: -119.9772 },
+      { countyId: "49053", label: "Zion National Park", lat: 37.2982, lng: -113.0263 },
+      { countyId: "49017", label: "Bryce Canyon National Park", lat: 37.5930, lng: -112.1871 },
+      { countyId: "47155", label: "Smoky Mountains", lat: 35.6118, lng: -83.4895 },
+      { countyId: "09003", label: "Hartford", lat: 41.7658, lng: -72.6734 },
+      { countyId: "44005", label: "Newport", lat: 41.4901, lng: -71.3128 },
+      { countyId: "44007", label: "Providence", lat: 41.8240, lng: -71.4128 },
+      { countyId: "36061", label: "NYC", lat: 40.7831, lng: -73.9712 },
+      { countyId: "42101", label: "Philly", lat: 39.9526, lng: -75.1652 },
+      { countyId: "24510", label: "Baltimore", lat: 39.2904, lng: -76.6122 },
+      { countyId: "11001", label: "DC", lat: 38.9072, lng: -77.0369 },
+      { countyId: "51113", label: "Shenandoah", lat: 38.5308, lng: -78.4350 },
+      { countyId: "45051", label: "Myrtle Beach", lat: 33.6891, lng: -78.8867 },
+      { countyId: "12095", label: "Orlando", lat: 28.5383, lng: -81.3792 },
+      { countyId: "12057", label: "Tampa Bay", lat: 27.9506, lng: -82.4572 },
+      { countyId: "55111", label: "Devil’s Lake", lat: 43.4189, lng: -89.7323 },
+      { countyId: "55009", label: "Green Bay", lat: 44.5133, lng: -88.0133 },
+      { countyId: "27053", label: "Minneapolis", lat: 44.9778, lng: -93.2650 },
+      { countyId: "26055", label: "Traverse City", lat: 44.7631, lng: -85.6206 },
+      { countyId: "13121", label: "Atlanta", lat: 33.7490, lng: -84.3880 },
+      { countyId: "04025", label: "Sedona", lat: 34.8697, lng: -111.7610 },
+      { countyId: "04005", label: "Grand Canyon", lat: 36.1069, lng: -112.1129 },
+      { countyId: "04013", label: "Phoenix", lat: 33.4484, lng: -112.0740 },
+      { countyId: "55079", label: "Milwaukee", lat: 43.0389, lng: -87.9065 },
+      { countyId: "49035", label: "Salt Lake City", lat: 40.7608, lng: -111.8910 },
+      { countyId: "08083", label: "Mesa Verde", lat: 37.2309, lng: -108.4618 },
+      { countyId: "08085", label: "Black Canyon of the Gunnison", lat: 38.5754, lng: -107.7416 },
+      { countyId: "08031", label: "Denver", lat: 39.7392, lng: -104.9903 },
+      { countyId: "08041", label: "Colorado Springs", lat: 38.8339, lng: -104.8214 },
+      { countyId: "36063", label: "Niagara Falls", lat: 43.0962, lng: -79.0377 },
+      { countyId: "17031", label: "Chicago", lat: 41.8781, lng: -87.6298 },
+      { countyId: "08013", label: "Boulder", lat: 40.01499, lng: -105.2705 }
+    ];
+
+    const highlightedByCountyId = Object.fromEntries(
+      highlightedLocations.map(location => [location.countyId, location])
+    );
 
     function updateCount() {
       countPill.textContent = `Visited counties: ${selectedCountyIds.size}`;
@@ -243,7 +313,6 @@
         <div class="gallery">
           ${photosHtml || '<p class="empty">No photos yet.</p>'}
         </div>
-        <textarea id="exportBox" placeholder="Your exported visited counties JSON will appear here.">${exportBox.value || ""}</textarea>
       `;
     }
 
@@ -278,13 +347,12 @@
       };
     }
 
-    function exportVisitedCounties() {
+    function copyVisitedCounties() {
       const sortedIds = Array.from(selectedCountyIds).sort();
       const exportData = {
         visitedCountyIds: sortedIds
       };
-      const box = document.getElementById("exportBox");
-      box.value = JSON.stringify(exportData, null, 2);
+      return JSON.stringify(exportData, null, 2);
     }
 
     let geojsonLayer;
@@ -306,22 +374,26 @@
             }
             geojsonLayer.resetStyle();
             updateCount();
-            exportVisitedCounties();
             document.getElementById("sidebar").innerHTML = `
               <h2 class="county-title">${countyLabel}</h2>
               <p class="empty">${selectedCountyIds.has(countyId) ? "Marked visited." : "Marked unvisited."}</p>
-              <textarea id="exportBox" placeholder="Your exported visited counties JSON will appear here.">${JSON.stringify({ visitedCountyIds: Array.from(selectedCountyIds).sort() }, null, 2)}</textarea>
             `;
             return;
           }
 
           if (info) {
             renderSidebar(info);
+          } else if (highlightedByCountyId[countyId]) {
+            const place = highlightedByCountyId[countyId];
+            document.getElementById("sidebar").innerHTML = `
+              <h2 class="county-title">${place.label}</h2>
+              <div class="meta">Highlighted stop</div>
+              <p>This county is one of your major trip locations. You can add photos for it next.</p>
+            `;
           } else {
             document.getElementById("sidebar").innerHTML = `
               <h2 class="county-title">${countyLabel}</h2>
               <p class="empty">You have not added photo data for this county yet.</p>
-              <textarea id="exportBox" placeholder="Your exported visited counties JSON will appear here.">${JSON.stringify({ visitedCountyIds: Array.from(selectedCountyIds).sort() }, null, 2)}</textarea>
             `;
           }
         },
@@ -339,32 +411,14 @@
       toggleSelectionBtn.textContent = selectionMode ? "Disable selection mode" : "Enable selection mode";
     });
 
-    document.getElementById("exportBtn").addEventListener("click", () => {
-      exportVisitedCounties();
-    });
-
     document.getElementById("copyBtn").addEventListener("click", async () => {
-      exportVisitedCounties();
-      const text = document.getElementById("exportBox").value;
+      const text = copyVisitedCounties();
       try {
         await navigator.clipboard.writeText(text);
         alert("Copied visited counties JSON.");
       } catch (err) {
-        alert("Copy failed. You can still select and copy from the text box manually.");
+        alert("Copy failed in the browser. Try again or use a different browser.");
       }
-    });
-
-    document.getElementById("clearBtn").addEventListener("click", () => {
-      if (!confirm("Clear all selected counties?")) return;
-      selectedCountyIds.clear();
-      geojsonLayer.resetStyle();
-      updateCount();
-      exportVisitedCounties();
-      document.getElementById("sidebar").innerHTML = `
-        <h2 class="county-title">Selection cleared</h2>
-        <p class="empty">All counties are now unvisited.</p>
-        <textarea id="exportBox" placeholder="Your exported visited counties JSON will appear here.">${JSON.stringify({ visitedCountyIds: [] }, null, 2)}</textarea>
-      `;
     });
 
     fetch("./counties.geojson")
@@ -380,9 +434,30 @@
           onEachFeature: onEachFeature
         }).addTo(map);
 
-        map.fitBounds(geojsonLayer.getBounds());
+        highlightedLocations.forEach(location => {
+          const marker = L.circleMarker([location.lat, location.lng], {
+            radius: 6,
+            weight: 2,
+            color: "#8a4b00",
+            fillColor: "#f5a623",
+            fillOpacity: 0.95
+          }).addTo(map);
+
+          marker.bindTooltip(location.label, {
+            direction: "top",
+            offset: [0, -6]
+          });
+
+          marker.on("click", () => {
+            document.getElementById("sidebar").innerHTML = `
+              <h2 class="county-title">${location.label}</h2>
+              <div class="meta">Highlighted stop</div>
+              <p>This is one of your featured cities or park areas on the map. Add photos here whenever you're ready.</p>
+            `;
+          });
+        });
+
         updateCount();
-        exportVisitedCounties();
       })
       .catch(error => {
         console.error(error);
@@ -392,10 +467,11 @@
             The page loaded, but counties.geojson could not be drawn.
             Check that the GeoJSON file is valid and in the same folder as index.html.
           </p>
-          <textarea id="exportBox" placeholder="Your exported visited counties JSON will appear here."></textarea>
+          
         `;
       });
   </script>
 </body>
 </html>
+
 
