@@ -33,10 +33,40 @@
       color: #555;
     }
 
+    #topbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin-top: 14px;
+    }
+
+    button {
+      border: 1px solid #ccc;
+      background: white;
+      padding: 10px 14px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    button:hover {
+      background: #f1f1f1;
+    }
+
+    .pill {
+      background: #eef4ff;
+      border: 1px solid #cfe0ff;
+      color: #24457a;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 14px;
+    }
+
     #layout {
       display: grid;
       grid-template-columns: 2fr 1fr;
-      height: calc(100vh - 86px);
+      height: calc(100vh - 145px);
     }
 
     #map {
@@ -85,6 +115,18 @@
       line-height: 1.5;
     }
 
+    textarea {
+      width: 100%;
+      min-height: 180px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 10px;
+      font-family: monospace;
+      font-size: 12px;
+      resize: vertical;
+      margin-top: 12px;
+    }
+
     @media (max-width: 900px) {
       #layout {
         grid-template-columns: 1fr;
@@ -102,7 +144,15 @@
 <body>
   <header>
     <h1>Counties I’ve Visited</h1>
-    <p>Click a county to see photos and notes.</p>
+    <p>Click a county to see photos and notes. Turn on selection mode to mark counties you’ve been to.</p>
+
+    <div id="topbar">
+      <button id="toggleSelectionBtn">Enable selection mode</button>
+      <button id="exportBtn">Export visited counties</button>
+      <button id="copyBtn">Copy export</button>
+      <button id="clearBtn">Clear all selected</button>
+      <div class="pill" id="countPill">Visited counties: 2</div>
+    </div>
   </header>
 
   <div id="layout">
@@ -111,8 +161,10 @@
     <aside id="sidebar">
       <h2 class="county-title">Welcome</h2>
       <p class="empty">
-        Click a green county to see photos and notes.
+        Normal mode: click a green county to see photos and notes.<br/><br/>
+        Selection mode: click counties to turn them visited or unvisited.
       </p>
+      <textarea id="exportBox" placeholder="Your exported visited counties JSON will appear here."></textarea>
     </aside>
   </div>
 
@@ -150,6 +202,16 @@
       attribution: "&copy; OpenStreetMap contributors"
     }).addTo(map);
 
+    let selectionMode = false;
+    const selectedCountyIds = new Set(Object.keys(visitedCountyData));
+    const exportBox = document.getElementById("exportBox");
+    const countPill = document.getElementById("countPill");
+    const toggleSelectionBtn = document.getElementById("toggleSelectionBtn");
+
+    function updateCount() {
+      countPill.textContent = `Visited counties: ${selectedCountyIds.size}`;
+    }
+
     function renderSidebar(data) {
       const sidebar = document.getElementById("sidebar");
 
@@ -167,6 +229,7 @@
         <div class="gallery">
           ${photosHtml || '<p class="empty">No photos yet.</p>'}
         </div>
+        <textarea id="exportBox" placeholder="Your exported visited counties JSON will appear here.">${exportBox.value || ""}</textarea>
       `;
     }
 
@@ -191,7 +254,7 @@
 
     function styleFeature(feature) {
       const countyId = getCountyId(feature);
-      const visited = !!visitedCountyData[countyId];
+      const visited = selectedCountyIds.has(String(countyId));
 
       return {
         color: "#555",
@@ -201,10 +264,19 @@
       };
     }
 
+    function exportVisitedCounties() {
+      const sortedIds = Array.from(selectedCountyIds).sort();
+      const exportData = {
+        visitedCountyIds: sortedIds
+      };
+      const box = document.getElementById("exportBox");
+      box.value = JSON.stringify(exportData, null, 2);
+    }
+
     let geojsonLayer;
 
     function onEachFeature(feature, layer) {
-      const countyId = getCountyId(feature);
+      const countyId = String(getCountyId(feature));
       const info = visitedCountyData[countyId];
       const countyLabel = getCountyName(feature);
 
@@ -212,12 +284,30 @@
 
       layer.on({
         click: () => {
+          if (selectionMode) {
+            if (selectedCountyIds.has(countyId)) {
+              selectedCountyIds.delete(countyId);
+            } else {
+              selectedCountyIds.add(countyId);
+            }
+            geojsonLayer.resetStyle();
+            updateCount();
+            exportVisitedCounties();
+            document.getElementById("sidebar").innerHTML = `
+              <h2 class="county-title">${countyLabel}</h2>
+              <p class="empty">${selectedCountyIds.has(countyId) ? "Marked visited." : "Marked unvisited."}</p>
+              <textarea id="exportBox" placeholder="Your exported visited counties JSON will appear here.">${JSON.stringify({ visitedCountyIds: Array.from(selectedCountyIds).sort() }, null, 2)}</textarea>
+            `;
+            return;
+          }
+
           if (info) {
             renderSidebar(info);
           } else {
             document.getElementById("sidebar").innerHTML = `
               <h2 class="county-title">${countyLabel}</h2>
-              <p class="empty">You have not marked this county as visited yet.</p>
+              <p class="empty">You have not added photo data for this county yet.</p>
+              <textarea id="exportBox" placeholder="Your exported visited counties JSON will appear here.">${JSON.stringify({ visitedCountyIds: Array.from(selectedCountyIds).sort() }, null, 2)}</textarea>
             `;
           }
         },
@@ -229,6 +319,39 @@
         }
       });
     }
+
+    toggleSelectionBtn.addEventListener("click", () => {
+      selectionMode = !selectionMode;
+      toggleSelectionBtn.textContent = selectionMode ? "Disable selection mode" : "Enable selection mode";
+    });
+
+    document.getElementById("exportBtn").addEventListener("click", () => {
+      exportVisitedCounties();
+    });
+
+    document.getElementById("copyBtn").addEventListener("click", async () => {
+      exportVisitedCounties();
+      const text = document.getElementById("exportBox").value;
+      try {
+        await navigator.clipboard.writeText(text);
+        alert("Copied visited counties JSON.");
+      } catch (err) {
+        alert("Copy failed. You can still select and copy from the text box manually.");
+      }
+    });
+
+    document.getElementById("clearBtn").addEventListener("click", () => {
+      if (!confirm("Clear all selected counties?")) return;
+      selectedCountyIds.clear();
+      geojsonLayer.resetStyle();
+      updateCount();
+      exportVisitedCounties();
+      document.getElementById("sidebar").innerHTML = `
+        <h2 class="county-title">Selection cleared</h2>
+        <p class="empty">All counties are now unvisited.</p>
+        <textarea id="exportBox" placeholder="Your exported visited counties JSON will appear here.">${JSON.stringify({ visitedCountyIds: [] }, null, 2)}</textarea>
+      `;
+    });
 
     fetch("./counties.geojson")
       .then(response => {
@@ -244,6 +367,8 @@
         }).addTo(map);
 
         map.fitBounds(geojsonLayer.getBounds());
+        updateCount();
+        exportVisitedCounties();
       })
       .catch(error => {
         console.error(error);
@@ -253,9 +378,11 @@
             The page loaded, but counties.geojson could not be drawn.
             Check that the GeoJSON file is valid and in the same folder as index.html.
           </p>
+          <textarea id="exportBox" placeholder="Your exported visited counties JSON will appear here."></textarea>
         `;
       });
   </script>
 </body>
 </html>
+
      
