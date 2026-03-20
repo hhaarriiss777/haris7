@@ -4,68 +4,94 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Haris Hussain — Counties Visited</title>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  />
   <style>
     * { box-sizing: border-box; }
+
     body {
       margin: 0;
       font-family: Arial, sans-serif;
       background: #f7f7f7;
       color: #111;
     }
+
     header {
       padding: 20px;
       background: white;
       border-bottom: 1px solid #ddd;
     }
-    header h1 { margin: 0 0 8px; }
-    header p { margin: 0; color: #555; }
+
+    header h1 {
+      margin: 0 0 8px;
+    }
+
+    header p {
+      margin: 0;
+      color: #555;
+    }
+
     #layout {
       display: grid;
       grid-template-columns: 2fr 1fr;
-      gap: 0;
       height: calc(100vh - 86px);
     }
-    #map { height: 100%; width: 100%; }
+
+    #map {
+      height: 100%;
+      width: 100%;
+      min-height: 500px;
+    }
+
     #sidebar {
       background: white;
       border-left: 1px solid #ddd;
       padding: 18px;
       overflow-y: auto;
     }
+
     .county-title {
       margin-top: 0;
     }
+
     .meta {
       color: #666;
       font-size: 14px;
       margin-bottom: 14px;
     }
+
     .gallery {
       display: grid;
       grid-template-columns: 1fr;
       gap: 12px;
     }
+
     .gallery img {
       width: 100%;
       border-radius: 12px;
       display: block;
     }
+
     .caption {
       font-size: 14px;
       color: #444;
       margin-top: 6px;
     }
+
     .empty {
       color: #666;
       line-height: 1.5;
     }
+
     @media (max-width: 900px) {
       #layout {
         grid-template-columns: 1fr;
         grid-template-rows: 55vh auto;
         height: auto;
       }
+
       #sidebar {
         border-left: none;
         border-top: 1px solid #ddd;
@@ -81,96 +107,116 @@
 
   <div id="layout">
     <div id="map"></div>
+
     <aside id="sidebar">
       <h2 class="county-title">Welcome</h2>
-      <p class="empty">This starter site is ready for a clickable county map. Replace the sample data below with your real county list, photos, and notes.</p>
+      <p class="empty">
+        Click a green county to see photos and notes.
+      </p>
     </aside>
   </div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
-    const map = L.map('map').setView([39.5, -98.35], 4);
-
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 18,
-      attribution: '&copy; OpenStreetMap contributors'
-    }).addTo(map);
-
-    // Replace these example entries with your real county data.
-    // countyId should match a property from your counties.geojson file.
     const visitedCountyData = {
-      '06037': {
-        name: 'Los Angeles County, California',
-        date: 'Visited in 2025',
-        notes: 'Sample entry. Replace with your own notes.',
+      "17031": {
+        name: "Cook County, Illinois",
+        date: "Home base",
+        notes: "Sample entry. Replace this with your real photos and notes.",
         photos: [
           {
-            src: 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80',
-            caption: 'Example photo 1'
-          },
-          {
-            src: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80',
-            caption: 'Example photo 2'
+            src: "https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=1200&q=80",
+            caption: "Chicago skyline"
           }
         ]
       },
-      '17031': {
-        name: 'Cook County, Illinois',
-        date: 'Home base',
-        notes: 'Another sample county entry.',
+      "06037": {
+        name: "Los Angeles County, California",
+        date: "Visited in 2025",
+        notes: "Another sample entry.",
         photos: [
           {
-            src: 'https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=1200&q=80',
-            caption: 'Chicago skyline'
+            src: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80",
+            caption: "Example photo"
           }
         ]
       }
     };
 
+    const map = L.map("map").setView([39.5, -98.35], 4);
+
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 18,
+      attribution: "&copy; OpenStreetMap contributors"
+    }).addTo(map);
+
     function renderSidebar(data) {
-      const sidebar = document.getElementById('sidebar');
+      const sidebar = document.getElementById("sidebar");
+
       const photosHtml = (data.photos || []).map(photo => `
         <div>
           <img src="${photo.src}" alt="${photo.caption || data.name}" />
-          ${photo.caption ? `<div class="caption">${photo.caption}</div>` : ''}
+          ${photo.caption ? `<div class="caption">${photo.caption}</div>` : ""}
         </div>
-      `).join('');
+      `).join("");
 
       sidebar.innerHTML = `
         <h2 class="county-title">${data.name}</h2>
-        <div class="meta">${data.date || ''}</div>
-        <p>${data.notes || ''}</p>
-        <div class="gallery">${photosHtml || '<p class="empty">No photos yet.</p>'}</div>
+        <div class="meta">${data.date || ""}</div>
+        <p>${data.notes || ""}</p>
+        <div class="gallery">
+          ${photosHtml || '<p class="empty">No photos yet.</p>'}
+        </div>
       `;
     }
 
+    function getCountyId(feature) {
+      return (
+        feature.properties?.GEOID ||
+        feature.properties?.GEOID10 ||
+        feature.properties?.FIPS ||
+        feature.properties?.id ||
+        feature.id
+      );
+    }
+
+    function getCountyName(feature) {
+      const county = feature.properties?.NAME || "County";
+      const state =
+        feature.properties?.STATE_NAME ||
+        feature.properties?.STATE ||
+        "";
+      return state ? `${county}, ${state}` : county;
+    }
+
     function styleFeature(feature) {
-      const countyId = feature.properties.GEOID || feature.properties.FIPS || feature.properties.id;
+      const countyId = getCountyId(feature);
       const visited = !!visitedCountyData[countyId];
+
       return {
-        color: '#555',
+        color: "#555",
         weight: 1,
-        fillColor: visited ? '#2e7d32' : '#d9d9d9',
+        fillColor: visited ? "#2e7d32" : "#d9d9d9",
         fillOpacity: visited ? 0.75 : 0.45
       };
     }
 
-    function onEachFeature(feature, layer) {
-      const countyId = feature.properties.GEOID || feature.properties.FIPS || feature.properties.id;
-      const countyName = feature.properties.NAME || 'County';
-      const stateName = feature.properties.STATE_NAME || '';
-      const info = visitedCountyData[countyId];
+    let geojsonLayer;
 
-      layer.bindTooltip(`${countyName}${stateName ? ', ' + stateName : ''}`);
+    function onEachFeature(feature, layer) {
+      const countyId = getCountyId(feature);
+      const info = visitedCountyData[countyId];
+      const countyLabel = getCountyName(feature);
+
+      layer.bindTooltip(countyLabel);
 
       layer.on({
         click: () => {
           if (info) {
             renderSidebar(info);
-            layer.bindPopup(`<strong>${info.name}</strong><br/>Click the sidebar for photos.`).openPopup();
           } else {
-            document.getElementById('sidebar').innerHTML = `
-              <h2 class="county-title">${countyName}${stateName ? ', ' + stateName : ''}</h2>
+            document.getElementById("sidebar").innerHTML = `
+              <h2 class="county-title">${countyLabel}</h2>
               <p class="empty">You have not marked this county as visited yet.</p>
             `;
           }
@@ -184,23 +230,32 @@
       });
     }
 
-    let geojsonLayer;
-
-    // Put a counties.geojson file in the same folder as this HTML file.
-    // Then replace the placeholder file with a real US counties GeoJSON dataset.
-    fetch('./counties.geojson')
-      .then(response => response.json())
+    fetch("./counties.geojson")
+      .then(response => {
+        if (!response.ok) {
+          throw new Error("Could not load counties.geojson");
+        }
+        return response.json();
+      })
       .then(counties => {
         geojsonLayer = L.geoJSON(counties, {
           style: styleFeature,
           onEachFeature: onEachFeature
         }).addTo(map);
+
         map.fitBounds(geojsonLayer.getBounds());
       })
-      .catch(err => {
-        document.getElementById('sidebar').innerHTML = `
-          <h2 class="county-title">Setup needed</h2>
-          <p class="empty">This page is working, but it needs a <strong>counties.geojson</strong> file in the same folder. After you add that file, your clickable county map will appear.</p>
+      .catch(error => {
+        console.error(error);
+        document.getElementById("sidebar").innerHTML = `
+          <h2 class="county-title">Map could not load</h2>
+          <p class="empty">
+            The page loaded, but counties.geojson could not be drawn.
+            Check that the GeoJSON file is valid and in the same folder as index.html.
+          </p>
         `;
-        console.error(err);
+      });
+  </script>
+</body>
+</html>
      
