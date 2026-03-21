@@ -414,7 +414,7 @@
         pts.push((cx + r2 * Math.cos(a2)).toFixed(2) + "," + (cy + r2 * Math.sin(a2)).toFixed(2));
       }
       const svg = '<svg xmlns="http://www.w3.org/2000/svg" width="' + size + '" height="' + size + '">'
-        + '<polygon points="' + pts.join(" ") + '" fill="#ffffff" stroke="#333" stroke-width="0.5"/>'
+        + '<polygon points="' + pts.join(" ") + '" fill="#CC0000" stroke="#880000" stroke-width="0.5"/>'
         + '</svg>';
       return L.divIcon({
         html: svg,
