@@ -505,10 +505,10 @@
       const countyId = getCountyId(feature);
       const visited = selectedCountyIds.has(String(countyId));
       return {
-        color: "#b060ff",
-        weight: 0.8,
-        fillColor: visited ? "#40c8ff" : "#1e1030",
-        fillOpacity: visited ? 0.55 : 0.5
+        color: "transparent",
+        weight: 0,
+        fillColor: visited ? "#40c8ff" : "transparent",
+        fillOpacity: visited ? 0.5 : 0
       };
     }
 
@@ -562,7 +562,7 @@
           }
         },
         mouseover: (e) => {
-          e.target.setStyle({ weight: 2, color: "#ff6ec7", fillOpacity: 0.8 });
+          e.target.setStyle({ weight: 0, fillColor: "#40c8ff", fillOpacity: 0.3 });
         },
         mouseout: (e) => {
           geojsonLayer.resetStyle(e.target);
@@ -599,9 +599,9 @@
         highlightedLocations.forEach(location => {
           const marker = L.circleMarker([location.lat, location.lng], {
             radius: 6,
-            weight: 2,
-            color: "#ff6ec7",
-            fillColor: "#00e5d6",
+            weight: 0,
+            color: "transparent",
+            fillColor: "#b060ff",
             fillOpacity: 0.95
           }).addTo(map);
 
