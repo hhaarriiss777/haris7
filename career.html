@@ -1,10 +1,769 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Career</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Career — Haris Hussain</title>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream: #0d0d0d;
+      --warm-white: #141414;
+      --ink: #f0f0f0;
+      --ink-light: #a0a0a8;
+      --accent: #c8c8c8;
+      --accent-soft: #1e1e1e;
+      --gold: #9a9a9a;
+      --border: #2a2a2a;
+      --card-bg: #161616;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background-color: var(--cream);
+      color: var(--ink);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(13, 13, 13, 0.92);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 60px;
+    }
+    .nav-name {
+      font-family: 'Lora', serif;
+      font-size: 1.05rem;
+      color: var(--ink);
+      text-decoration: none;
+      letter-spacing: 0.01em;
+    }
+    .nav-links { display: flex; gap: 2rem; }
+    .nav-links a {
+      text-decoration: none;
+      font-size: 0.88rem;
+      font-weight: 400;
+      color: var(--ink-light);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover, .nav-links a.active { color: var(--accent); }
+
+    /* ── HERO ── */
+    .hero {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 80px 2rem 60px;
+    }
+    .hero-eyebrow {
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1rem;
+      opacity: 0;
+      animation: fadeUp 0.6s ease forwards 0.1s;
+    }
+    .hero h1 {
+      font-family: 'Lora', serif;
+      font-size: clamp(2.2rem, 5vw, 3.2rem);
+      line-height: 1.2;
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 0.6s ease forwards 0.2s;
+    }
+    .hero h1 em {
+      font-style: italic;
+      color: var(--accent);
+    }
+    .hero-intro {
+      font-size: 1.08rem;
+      color: var(--ink-light);
+      max-width: 600px;
+      line-height: 1.8;
+      opacity: 0;
+      animation: fadeUp 0.6s ease forwards 0.35s;
+    }
+
+    /* ── DIVIDER ── */
+    .divider {
+      max-width: 780px;
+      margin: 0 auto 60px;
+      padding: 0 2rem;
+    }
+    .divider hr {
+      border: none;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ── SECTION WRAPPER ── */
+    .section {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 0 2rem 80px;
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .section.visible { opacity: 1; transform: translateY(0); }
+
+    .section-label {
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ── SPOTLIGHT CARD (current role) ── */
+    .spotlight {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2.5rem;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 2rem;
+    }
+    .spotlight::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #ffffff, #888888);
+    }
+    .role-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+    }
+    .role-title {
+      font-family: 'Lora', serif;
+      font-size: 1.45rem;
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 0.3rem;
+    }
+    .role-company {
+      font-size: 0.95rem;
+      color: var(--accent);
+      font-weight: 500;
+    }
+    .role-date {
+      font-size: 0.8rem;
+      font-weight: 400;
+      color: var(--ink-light);
+      background: var(--accent-soft);
+      padding: 0.3rem 0.85rem;
+      border-radius: 20px;
+      white-space: nowrap;
+    }
+    .role-body {
+      font-size: 0.97rem;
+      color: var(--ink-light);
+      line-height: 1.8;
+      margin-bottom: 1.5rem;
+    }
+    .highlights {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+    }
+    .highlight-chip {
+      background: var(--accent-soft);
+      border-radius: 10px;
+      padding: 0.85rem 1rem;
+    }
+    .highlight-chip .stat {
+      font-family: 'Lora', serif;
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: var(--accent);
+      display: block;
+    }
+    .highlight-chip .stat-label {
+      font-size: 0.78rem;
+      color: var(--ink-light);
+      margin-top: 0.15rem;
+    }
+
+    /* ── TIMELINE (CVS Journey) ── */
+    .timeline { position: relative; }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 18px;
+      top: 0; bottom: 0;
+      width: 1px;
+      background: linear-gradient(to bottom, #ffffff, #888888, var(--border));
+    }
+    .timeline-item {
+      display: flex;
+      gap: 1.8rem;
+      margin-bottom: 2.5rem;
+      position: relative;
+    }
+    .timeline-dot {
+      flex-shrink: 0;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--card-bg);
+      border: 2px solid var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--accent);
+      position: relative;
+      z-index: 1;
+    }
+    .timeline-content {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem 1.8rem;
+      flex: 1;
+      transition: box-shadow 0.2s;
+    }
+    .timeline-content:hover {
+      box-shadow: 0 4px 20px rgba(255, 255, 255, 0.04);
+    }
+    .tl-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 0.75rem;
+    }
+    .tl-role {
+      font-family: 'Lora', serif;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--ink);
+    }
+    .tl-subtitle {
+      font-size: 0.85rem;
+      color: var(--accent);
+      margin-top: 0.15rem;
+    }
+    .tl-date {
+      font-size: 0.78rem;
+      color: var(--ink-light);
+      background: var(--cream);
+      border: 1px solid var(--border);
+      padding: 0.2rem 0.7rem;
+      border-radius: 20px;
+      white-space: nowrap;
+    }
+    .tl-body {
+      font-size: 0.93rem;
+      color: var(--ink-light);
+      line-height: 1.75;
+    }
+    .tl-tag {
+      display: inline-block;
+      margin-top: 0.9rem;
+      font-size: 0.74rem;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      color: #b0b0b0;
+      background: #1e1e1e;
+      border: 1px solid #333333;
+      padding: 0.2rem 0.65rem;
+      border-radius: 20px;
+    }
+
+    /* ── EARLIER EXPERIENCE ── */
+    .mini-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.2rem;
+    }
+    .mini-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.4rem 1.6rem;
+      transition: box-shadow 0.2s;
+    }
+    .mini-card:hover {
+      box-shadow: 0 4px 18px rgba(0,0,0,0.06);
+    }
+    .mini-card-company {
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.4rem;
+    }
+    .mini-card-role {
+      font-family: 'Lora', serif;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 0.5rem;
+    }
+    .mini-card-desc {
+      font-size: 0.88rem;
+      color: var(--ink-light);
+      line-height: 1.65;
+    }
+
+    /* ── EDUCATION ── */
+    .edu-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2rem 2.5rem;
+      display: flex;
+      gap: 2rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .edu-main { flex: 1; min-width: 220px; }
+    .edu-school {
+      font-family: 'Lora', serif;
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 0.3rem;
+    }
+    .edu-degree {
+      font-size: 0.95rem;
+      color: var(--ink-light);
+      margin-bottom: 1rem;
+    }
+    .edu-badges { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .badge {
+      font-size: 0.78rem;
+      font-weight: 500;
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      color: var(--ink-light);
+      background: var(--cream);
+    }
+    .badge.gold {
+      background: #1e1e1e;
+      border-color: #3a3a3a;
+      color: #d0d0d0;
+    }
+    .edu-gpa {
+      text-align: center;
+      background: linear-gradient(135deg, #1e1e1e, #222222);
+      border-radius: 12px;
+      padding: 1.2rem 1.8rem;
+      border: 1px solid var(--border);
+    }
+    .gpa-num {
+      font-family: 'Lora', serif;
+      font-size: 2.2rem;
+      font-weight: 600;
+      color: var(--accent);
+      line-height: 1;
+    }
+    .gpa-label {
+      font-size: 0.78rem;
+      color: var(--ink-light);
+      margin-top: 0.3rem;
+    }
+
+    /* ── BEYOND WORK ── */
+    .beyond-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+    .beyond-item {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.3rem 1.5rem;
+      transition: box-shadow 0.2s;
+    }
+    .beyond-item:hover {
+      box-shadow: 0 4px 18px rgba(0,0,0,0.06);
+    }
+    .beyond-icon {
+      font-size: 1.5rem;
+      margin-bottom: 0.6rem;
+    }
+    .beyond-title {
+      font-family: 'Lora', serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 0.3rem;
+    }
+    .beyond-desc {
+      font-size: 0.83rem;
+      color: var(--ink-light);
+      line-height: 1.6;
+    }
+
+    /* ── SKILLS ── */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.2rem;
+    }
+    .skills-group {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.4rem 1.6rem;
+    }
+    .skills-group-title {
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1rem;
+    }
+    .skill-pills { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+    .pill {
+      font-size: 0.8rem;
+      padding: 0.25rem 0.7rem;
+      background: var(--cream);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      color: var(--ink-light);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      text-align: center;
+      padding: 3rem 2rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.85rem;
+      color: var(--ink-light);
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 600px) {
+      .hero h1 { font-size: 2rem; }
+      .spotlight { padding: 1.6rem; }
+      .edu-card { padding: 1.4rem; }
+      .timeline::before { left: 14px; }
+      .timeline-dot { width: 28px; height: 28px; font-size: 0.6rem; }
+    }
+  </style>
 </head>
 <body>
-  <h1>Career Page Coming Soon</h1>
-  <a href="index.html">Back Home</a>
+
+  <!-- NAV -->
+  <nav>
+    <a class="nav-name" href="index.html">Haris Hussain</a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="career.html" class="active">Career</a>
+      <a href="travel.html">Travel</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <div class="hero">
+    <p class="hero-eyebrow">My professional journey</p>
+    <h1>Healthcare FP&A — <em>where the numbers actually mean something.</em></h1>
+    <p class="hero-intro">
+      I'm a finance manager focused on healthcare FP&A — budgeting, forecasting, and financial planning 
+      across some of the largest names in the industry. Here's how the story has unfolded so far.
+    </p>
+  </div>
+
+  <div class="divider"><hr></div>
+
+  <!-- CURRENT ROLE -->
+  <div class="section" id="current">
+    <p class="section-label">Where I am now</p>
+    <div class="spotlight">
+      <div class="role-header">
+        <div>
+          <div class="role-title">Finance Manager — SG&A & Cost of Sales</div>
+          <div class="role-company">CVS Health · MinuteClinic</div>
+        </div>
+        <span class="role-date">2025 – Present</span>
+      </div>
+      <p class="role-body">
+        After a year at Aetna Better Health of Illinois managing $45M in medical reserves and delivering 
+        claims analysis to the CMO, I was promoted back into CVS Health's MinuteClinic organization — 
+        this time as a Finance Manager overseeing SG&A and Cost of Sales. It's a full-circle moment 
+        from my rotation days, but with a broader scope and a lot more ownership.
+      </p>
+      <div class="highlights">
+        <div class="highlight-chip">
+          <span class="stat">SG&A</span>
+          <span class="stat-label">primary area of ownership</span>
+        </div>
+        <div class="highlight-chip">
+          <span class="stat">COS</span>
+          <span class="stat-label">Cost of Sales oversight</span>
+        </div>
+        <div class="highlight-chip">
+          <span class="stat">Manager</span>
+          <span class="stat-label">CVS MinuteClinic · promoted role</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CVS JOURNEY -->
+  <div class="section" id="cvs">
+    <p class="section-label">The CVS chapter</p>
+    <p style="color:var(--ink-light); font-size:0.97rem; margin-bottom:2rem; max-width:620px;">
+      I spent three years in CVS Health's Finance Leadership Development Program — a rotational program 
+      that dropped me into completely different environments every year. It was a crash course in 
+      adaptability, and honestly the best thing that could've happened early in my career.
+    </p>
+    <div class="timeline">
+
+      <div class="timeline-item">
+        <div class="timeline-dot">III</div>
+        <div class="timeline-content">
+          <div class="tl-top">
+            <div>
+              <div class="tl-role">Sr. Financial Analyst — MinuteClinic</div>
+              <div class="tl-subtitle">CVS Health</div>
+            </div>
+            <span class="tl-date">Jun 2023 – Jun 2024</span>
+          </div>
+          <p class="tl-body">
+            Managed financials for 30+ departments and built the 2024 budget and forecasting process. 
+            Prepared quarterly reports for the investor relations team covering clinic volumes, openings/closings, 
+            and insurance vs. self-pay breakdowns. Led the rollout of Anaplan for headcount planning, 
+            including training the team on the new system.
+          </p>
+          <span class="tl-tag">Forecasting · Investor Relations · Anaplan</span>
+        </div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot">↑</div>
+        <div class="timeline-content">
+          <div class="tl-top">
+            <div>
+              <div class="tl-role">Sr. Financial Analyst — Managed Care</div>
+              <div class="tl-subtitle">Aetna Better Health of Illinois</div>
+            </div>
+            <span class="tl-date">Jun 2024 – 2025</span>
+          </div>
+          <p class="tl-body">
+            Managed $45M in large case medical reserves and delivered monthly reporting to the CMO on 
+            key medical and newborn trends. Used SQL to extract and analyze high-dollar claims, eligibility, 
+            and diagnosis data. Led MLR compliance analysis and bi-annual Medicaid rate forecasting — 
+            before being promoted back to CVS as a Finance Manager.
+          </p>
+          <span class="tl-tag">$45M reserves · SQL · MLR Compliance</span>
+        </div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot">II</div>
+        <div class="timeline-content">
+          <div class="tl-top">
+            <div>
+              <div class="tl-role">FP&A — bSwift Division</div>
+              <div class="tl-subtitle">CVS Health</div>
+            </div>
+            <span class="tl-date">Jun 2022 – Jun 2023</span>
+          </div>
+          <p class="tl-body">
+            My most demanding rotation — managing hundreds of concurrent requests across competing deadlines 
+            while keeping complex project timelines intact. I built a headcount tracker covering 1,000+ employees, 
+            ensuring accurate forecasting of hiring, terminations, and promotions reconciled against month-end actuals. 
+            Also led system integration training and managed budget finalization and bonus accruals post-transition.
+          </p>
+          <span class="tl-tag">Headcount Planning · FP&A · Budget Management</span>
+        </div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot">I</div>
+        <div class="timeline-content">
+          <div class="tl-top">
+            <div>
+              <div class="tl-role">FP&A — Aetna Better Health Virginia</div>
+              <div class="tl-subtitle">CVS Health</div>
+            </div>
+            <span class="tl-date">Jun 2021 – May 2022</span>
+          </div>
+          <p class="tl-body">
+            My first real post-grad role. I analyzed $90M in spend and found $11M in cost-saving 
+            opportunities through vendor audits and rate analysis — not a bad find for a first year. 
+            Also managed $30M in capitation payments, led year-end 1099 reconciliation, and supported 
+            external audits.
+          </p>
+          <span class="tl-tag">$11M savings identified · Vendor Audits · Capitation</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- EARLIER EXPERIENCE -->
+  <div class="section" id="early">
+    <p class="section-label">Earlier on</p>
+    <div class="mini-cards">
+      <div class="mini-card">
+        <div class="mini-card-company">CVS Health · Caremark</div>
+        <div class="mini-card-role">Finance Intern — Margin Erosion</div>
+        <p class="mini-card-desc">Tracked $400M in financial impacts from client contract negotiations and built a pricing inventory for PBM clients across 10 business units.</p>
+      </div>
+      <div class="mini-card">
+        <div class="mini-card-company">L2T Media · Evanston, IL</div>
+        <div class="mini-card-role">Finance Intern</div>
+        <p class="mini-card-desc">My first finance job. Managed A/P entries, produced P&L reports for year-over-year and month-over-month analysis using QuickBooks.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- EDUCATION -->
+  <div class="section" id="education">
+    <p class="section-label">Education</p>
+    <div class="edu-card">
+      <div class="edu-main">
+        <div class="edu-school">University of Illinois at Urbana-Champaign</div>
+        <div class="edu-degree">B.S. in Finance · Graduated May 2021</div>
+        <div class="edu-badges">
+          <span class="badge gold">High Honors Graduate</span>
+          <span class="badge gold">Dennis L. Dean Scholarship</span>
+          <span class="badge">Dean's List</span>
+        </div>
+      </div>
+      <div class="edu-gpa">
+        <div class="gpa-num">3.9</div>
+        <div class="gpa-label">GPA / 4.0</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BEYOND WORK -->
+  <div class="section" id="beyond">
+    <p class="section-label">Beyond the spreadsheets</p>
+    <div class="beyond-grid">
+      <div class="beyond-item">
+        <div class="beyond-icon">🦅</div>
+        <div class="beyond-title">Eagle Scout</div>
+        <p class="beyond-desc">Earned in 2016. Now giving back as Chartered Organization Rep for Boy Scout Troop 825.</p>
+      </div>
+      <div class="beyond-item">
+        <div class="beyond-icon">🏕️</div>
+        <div class="beyond-title">Camp Mosaic</div>
+        <p class="beyond-desc">Logistics Coordinator for a community camp — a completely different kind of planning challenge.</p>
+      </div>
+      <div class="beyond-item">
+        <div class="beyond-icon">🏀</div>
+        <div class="beyond-title">Aga Khan Youth & Sports</div>
+        <p class="beyond-desc">Board member for a youth and sports organization — keeping the community connected.</p>
+      </div>
+      <div class="beyond-item">
+        <div class="beyond-icon">💡</div>
+        <div class="beyond-title">OKHealth</div>
+        <p class="beyond-desc">Served as a Strategy Consultant — a chance to apply finance thinking in a different context.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SKILLS -->
+  <div class="section" id="skills">
+    <p class="section-label">Tools & skills</p>
+    <div class="skills-grid">
+      <div class="skills-group">
+        <div class="skills-group-title">Finance</div>
+        <div class="skill-pills">
+          <span class="pill">FP&A</span>
+          <span class="pill">Budgeting</span>
+          <span class="pill">Forecasting</span>
+          <span class="pill">Variance Analysis</span>
+          <span class="pill">MLR Analysis</span>
+          <span class="pill">SG&A Management</span>
+          <span class="pill">Month-End Close</span>
+        </div>
+      </div>
+      <div class="skills-group">
+        <div class="skills-group-title">Software & Tech</div>
+        <div class="skill-pills">
+          <span class="pill">SQL</span>
+          <span class="pill">Excel</span>
+          <span class="pill">Anaplan</span>
+          <span class="pill">Oracle PBS</span>
+          <span class="pill">Hyperion Smart View</span>
+          <span class="pill">NetSuite</span>
+          <span class="pill">PowerPoint</span>
+        </div>
+      </div>
+      <div class="skills-group">
+        <div class="skills-group-title">Building & Tools</div>
+        <div class="skill-pills">
+          <span class="pill">HTML</span>
+          <span class="pill">GitHub</span>
+          <span class="pill">AI (Claude, ChatGPT)</span>
+          <span class="pill">Prompt Engineering</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>Built with care · <a href="index.html">Back to home</a></p>
+  </footer>
+
+  <script>
+    // Scroll-triggered reveal
+    const sections = document.querySelectorAll('.section');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.08 });
+    sections.forEach(s => observer.observe(s));
+  </script>
+
 </body>
 </html>
