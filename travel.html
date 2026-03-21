@@ -4,33 +4,55 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Trips</title>
-  <link
-    rel="stylesheet"
-    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-  />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
   <style>
     * { box-sizing: border-box; }
 
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f7f7f7;
-      color: #111;
+      font-family: 'DM Sans', Arial, sans-serif;
+      background: #0d0d1a;
+      color: #f0e6ff;
     }
 
     header {
-      padding: 20px;
-      background: white;
-      border-bottom: 1px solid #ddd;
+      padding: 20px 24px;
+      background: linear-gradient(135deg, #0d0d1a 0%, #1a0d2e 100%);
+      border-bottom: 1px solid #2a1a4a;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Subtle neon grid lines in header */
+    header::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        repeating-linear-gradient(90deg, transparent, transparent 60px, rgba(255,110,199,0.04) 60px, rgba(255,110,199,0.04) 61px),
+        repeating-linear-gradient(0deg, transparent, transparent 40px, rgba(0,229,214,0.04) 40px, rgba(0,229,214,0.04) 41px);
+      pointer-events: none;
     }
 
     header h1 {
-      margin: 0 0 8px;
+      margin: 0 0 6px;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      background: linear-gradient(90deg, #ff6ec7, #00e5d6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
 
     header p {
       margin: 0;
-      color: #555;
+      color: #9a80b8;
+      font-size: 0.9rem;
+      position: relative;
     }
 
     #topbar {
@@ -39,75 +61,107 @@
       gap: 10px;
       align-items: center;
       margin-top: 14px;
+      position: relative;
     }
 
     button {
-      border: 1px solid #ccc;
-      background: white;
-      padding: 10px 14px;
-      border-radius: 10px;
+      border: 1px solid #4a2a6a;
+      background: rgba(255,110,199,0.08);
+      color: #ff6ec7;
+      padding: 9px 16px;
+      border-radius: 8px;
       cursor: pointer;
-      font-size: 14px;
+      font-size: 13px;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 500;
+      letter-spacing: 0.03em;
+      transition: all 0.2s;
     }
 
     button:hover {
-      background: #f1f1f1;
+      background: rgba(255,110,199,0.18);
+      border-color: #ff6ec7;
+      box-shadow: 0 0 12px rgba(255,110,199,0.25);
     }
 
     .pill {
-      background: #eef4ff;
-      border: 1px solid #cfe0ff;
-      color: #24457a;
-      padding: 8px 12px;
+      background: rgba(0,229,214,0.1);
+      border: 1px solid rgba(0,229,214,0.35);
+      color: #00e5d6;
+      padding: 8px 14px;
       border-radius: 999px;
-      font-size: 14px;
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.03em;
     }
 
     #layout {
       display: grid;
       grid-template-columns: 2fr 1fr;
-      height: calc(100vh - 145px);
+      height: calc(100vh - 148px);
     }
 
     .location-list {
       margin: 14px 0 0;
       padding-left: 18px;
-      color: #444;
-      line-height: 1.5;
+      color: #9a80b8;
+      line-height: 1.6;
     }
 
     .location-badge {
       display: inline-block;
-      background: #fff4e5;
-      border: 1px solid #ffd7a3;
-      color: #8a4b00;
+      background: rgba(255,110,199,0.12);
+      border: 1px solid rgba(255,110,199,0.35);
+      color: #ff6ec7;
       border-radius: 999px;
-      padding: 5px 10px;
+      padding: 5px 12px;
       font-size: 12px;
+      font-weight: 500;
       margin-bottom: 10px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
     }
 
     #map {
       height: 100%;
       width: 100%;
       min-height: 500px;
+      filter: hue-rotate(200deg) saturate(0.7) brightness(0.85);
     }
 
     #sidebar {
-      background: white;
-      border-left: 1px solid #ddd;
-      padding: 18px;
+      background: #100d1e;
+      border-left: 1px solid #2a1a4a;
+      padding: 20px;
       overflow-y: auto;
+    }
+
+    /* Neon top line on sidebar */
+    #sidebar::before {
+      content: '';
+      display: block;
+      height: 2px;
+      background: linear-gradient(90deg, #ff6ec7, #00e5d6, #b060ff);
+      margin: -20px -20px 18px;
     }
 
     .county-title {
       margin-top: 0;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: #ff6ec7;
     }
 
     .meta {
-      color: #666;
-      font-size: 14px;
+      color: #00e5d6;
+      font-size: 13px;
       margin-bottom: 14px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
     }
 
     .gallery {
@@ -118,32 +172,42 @@
 
     .gallery img {
       width: 100%;
-      border-radius: 12px;
+      border-radius: 8px;
       display: block;
+      border: 1px solid #2a1a4a;
     }
 
     .caption {
-      font-size: 14px;
-      color: #444;
+      font-size: 13px;
+      color: #9a80b8;
       margin-top: 6px;
     }
 
     .empty {
-      color: #666;
-      line-height: 1.5;
+      color: #6a5080;
+      line-height: 1.6;
+      font-size: 0.9rem;
     }
 
     textarea {
       width: 100%;
       min-height: 180px;
-      border: 1px solid #ddd;
-      border-radius: 10px;
+      border: 1px solid #2a1a4a;
+      border-radius: 8px;
       padding: 10px;
       font-family: monospace;
       font-size: 12px;
       resize: vertical;
       margin-top: 12px;
+      background: #0a0812;
+      color: #00e5d6;
     }
+
+    /* Scrollbar styling */
+    #sidebar::-webkit-scrollbar { width: 6px; }
+    #sidebar::-webkit-scrollbar-track { background: #0d0d1a; }
+    #sidebar::-webkit-scrollbar-thumb { background: #2a1a4a; border-radius: 3px; }
+    #sidebar::-webkit-scrollbar-thumb:hover { background: #4a2a6a; }
 
     @media (max-width: 900px) {
       #layout {
@@ -151,10 +215,9 @@
         grid-template-rows: 55vh auto;
         height: auto;
       }
-
       #sidebar {
         border-left: none;
-        border-top: 1px solid #ddd;
+        border-top: 1px solid #2a1a4a;
       }
     }
   </style>
@@ -162,8 +225,7 @@
 <body>
   <header>
     <h1>Trips</h1>
-    <p>Click a yello dot to see photos and notes. Turn on selection mode if you want to fine-tune your visited counties.</p>
-
+    <p>Click a dot to see photos and notes. Turn on selection mode to fine-tune your visited counties.</p>
     <div id="topbar">
       <button id="toggleSelectionBtn">Enable selection mode</button>
       <button id="copyBtn">Copy county list</button>
@@ -177,13 +239,13 @@
     <aside id="sidebar">
       <h2 class="county-title">Welcome</h2>
       <p class="empty">
-        Normal mode: click a green county to see photos and notes.<br/><br/>
-        Selection mode: click counties to turn them visited or unvisited.
+        Normal mode: click a dot to see photos and notes.<br/><br/>
+        Selection mode: click counties to mark them visited or unvisited.
       </p>
       <div class="location-badge">Highlighted trip stops</div>
       <ul class="location-list">
-        <li>Major cities and park areas are marked with map callouts.</li>
-        <li>Use Copy county list anytime to copy your current visited-county data.</li>
+        <li>Major cities and park areas are marked on the map.</li>
+        <li>Use Copy county list anytime to export your visited-county data.</li>
       </ul>
     </aside>
   </div>
@@ -230,10 +292,7 @@
     ];
 
     const map = L.map("map");
-    map.fitBounds([
-      [24.5, -125.0],
-      [49.5, -66.5]
-    ]);
+    map.fitBounds([[24.5, -125.0],[49.5, -66.5]]);
 
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       maxZoom: 18,
@@ -256,7 +315,7 @@
       { countyId: "15009", label: "Maui", lat: 20.7984, lng: -156.3319 },
       { countyId: "06017", label: "Lake Tahoe", lat: 38.9399, lng: -119.9772 },
       { countyId: "49053", label: "Zion National Park", lat: 37.2982, lng: -113.0263 },
-      { countyId: "49017", label: "Bryce Canyon National Park", lat: 37.5930, lng: -112.1871 },
+      { countyId: "49017", label: "Bryce Canyon", lat: 37.5930, lng: -112.1871 },
       { countyId: "47155", label: "Smoky Mountains", lat: 35.6118, lng: -83.4895 },
       { countyId: "09003", label: "Hartford", lat: 41.7658, lng: -72.6734 },
       { countyId: "44005", label: "Newport", lat: 41.4901, lng: -71.3128 },
@@ -269,7 +328,7 @@
       { countyId: "45051", label: "Myrtle Beach", lat: 33.6891, lng: -78.8867 },
       { countyId: "12095", label: "Orlando", lat: 28.5383, lng: -81.3792 },
       { countyId: "12057", label: "Tampa Bay", lat: 27.9506, lng: -82.4572 },
-      { countyId: "55111", label: "Devil’s Lake", lat: 43.4189, lng: -89.7323 },
+      { countyId: "55111", label: "Devil's Lake", lat: 43.4189, lng: -89.7323 },
       { countyId: "55009", label: "Green Bay", lat: 44.5133, lng: -88.0133 },
       { countyId: "27053", label: "Minneapolis", lat: 44.9778, lng: -93.2650 },
       { countyId: "26055", label: "Traverse City", lat: 44.7631, lng: -85.6206 },
@@ -280,7 +339,7 @@
       { countyId: "55079", label: "Milwaukee", lat: 43.0389, lng: -87.9065 },
       { countyId: "49035", label: "Salt Lake City", lat: 40.7608, lng: -111.8910 },
       { countyId: "08083", label: "Mesa Verde", lat: 37.2309, lng: -108.4618 },
-      { countyId: "08085", label: "Black Canyon of the Gunnison", lat: 38.5754, lng: -107.7416 },
+      { countyId: "08085", label: "Black Canyon", lat: 38.5754, lng: -107.7416 },
       { countyId: "08031", label: "Denver", lat: 39.7392, lng: -104.9903 },
       { countyId: "08041", label: "Colorado Springs", lat: 38.8339, lng: -104.8214 },
       { countyId: "36063", label: "Niagara Falls", lat: 43.0962, lng: -79.0377 },
@@ -290,7 +349,7 @@
     ];
 
     const highlightedByCountyId = Object.fromEntries(
-      highlightedLocations.map(location => [location.countyId, location])
+      highlightedLocations.map(loc => [loc.countyId, loc])
     );
 
     function updateCount() {
@@ -299,7 +358,6 @@
 
     function renderSidebar(data) {
       const sidebar = document.getElementById("sidebar");
-
       const photosHtml = (data.photos || []).map(photo => `
         <div>
           <img src="${photo.src}" alt="${photo.caption || data.name}" />
@@ -329,31 +387,24 @@
 
     function getCountyName(feature) {
       const county = feature.properties?.NAME || "County";
-      const state =
-        feature.properties?.STATE_NAME ||
-        feature.properties?.STATE ||
-        "";
+      const state = feature.properties?.STATE_NAME || feature.properties?.STATE || "";
       return state ? `${county}, ${state}` : county;
     }
 
     function styleFeature(feature) {
       const countyId = getCountyId(feature);
       const visited = selectedCountyIds.has(String(countyId));
-
       return {
-        color: "#555",
-        weight: 1,
-        fillColor: visited ? "#2e7d32" : "#d9d9d9",
-        fillOpacity: visited ? 0.75 : 0.45
+        color: "#1a0d2e",
+        weight: 0.8,
+        fillColor: visited ? "#b060ff" : "#1e1030",
+        fillOpacity: visited ? 0.65 : 0.5
       };
     }
 
     function copyVisitedCounties() {
       const sortedIds = Array.from(selectedCountyIds).sort();
-      const exportData = {
-        visitedCountyIds: sortedIds
-      };
-      return JSON.stringify(exportData, null, 2);
+      return JSON.stringify({ visitedCountyIds: sortedIds }, null, 2);
     }
 
     let geojsonLayer;
@@ -363,7 +414,9 @@
       const info = visitedCountyData[countyId];
       const countyLabel = getCountyName(feature);
 
-      layer.bindTooltip(countyLabel);
+      layer.bindTooltip(countyLabel, {
+        className: 'leaflet-tooltip-mv'
+      });
 
       layer.on({
         click: () => {
@@ -388,18 +441,18 @@
             const place = highlightedByCountyId[countyId];
             document.getElementById("sidebar").innerHTML = `
               <h2 class="county-title">${place.label}</h2>
-              <div class="meta">Highlighted stop</div>
-              <p>This county is one of your major trip locations. You can add photos for it next.</p>
+              <div class="meta">Featured stop</div>
+              <p style="color:#9a80b8;">This is one of your major trip locations. Add photos here whenever you're ready.</p>
             `;
           } else {
             document.getElementById("sidebar").innerHTML = `
               <h2 class="county-title">${countyLabel}</h2>
-              <p class="empty">You have not added photo data for this county yet.</p>
+              <p class="empty">No photos added for this county yet.</p>
             `;
           }
         },
         mouseover: (e) => {
-          e.target.setStyle({ weight: 2 });
+          e.target.setStyle({ weight: 2, color: "#ff6ec7" });
         },
         mouseout: (e) => {
           geojsonLayer.resetStyle(e.target);
@@ -418,15 +471,13 @@
         await navigator.clipboard.writeText(text);
         alert("Copied visited counties JSON.");
       } catch (err) {
-        alert("Copy failed in the browser. Try again or use a different browser.");
+        alert("Copy failed. Try again or use a different browser.");
       }
     });
 
     fetch("./counties.geojson")
       .then(response => {
-        if (!response.ok) {
-          throw new Error("Could not load counties.geojson");
-        }
+        if (!response.ok) throw new Error("Could not load counties.geojson");
         return response.json();
       })
       .then(counties => {
@@ -439,8 +490,8 @@
           const marker = L.circleMarker([location.lat, location.lng], {
             radius: 6,
             weight: 2,
-            color: "#8a4b00",
-            fillColor: "#f5a623",
+            color: "#ff6ec7",
+            fillColor: "#00e5d6",
             fillOpacity: 0.95
           }).addTo(map);
 
@@ -452,8 +503,8 @@
           marker.on("click", () => {
             document.getElementById("sidebar").innerHTML = `
               <h2 class="county-title">${location.label}</h2>
-              <div class="meta">Highlighted stop</div>
-              <p>This is one of your featured cities or park areas on the map. Add photos here whenever you're ready.</p>
+              <div class="meta">Featured stop</div>
+              <p style="color:#9a80b8;">One of your featured cities or parks. Add photos here whenever you're ready.</p>
             `;
           });
         });
@@ -466,13 +517,10 @@
           <h2 class="county-title">Map could not load</h2>
           <p class="empty">
             The page loaded, but counties.geojson could not be drawn.
-            Check that the GeoJSON file is valid and in the same folder as index.html.
+            Check that the file is valid and in the same folder as index.html.
           </p>
-          
         `;
       });
   </script>
 </body>
 </html>
-
-
