@@ -2,52 +2,129 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Haris Hussain</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
   <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
     body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #0f172a;
-      color: white;
+      font-family: 'DM Sans', Arial, sans-serif;
+      background: #0a0a0a;
+      color: #f0f0f0;
+      min-height: 100vh;
       display: flex;
-      height: 100vh;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      flex-direction: column;
       text-align: center;
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
     }
 
-    h1 {
-      font-size: 3rem;
-      margin-bottom: 30px;
+  
+ 
+    .container {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
+    /* ── STAR ROW ── */
+    .star-row {
+      display: flex;
+      justify-content: center;
+      gap: 1.4rem;
+      margin: 0.6rem 0;
+    }
+    .star-row svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    /* ── NAME ── */
+    .name {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: clamp(3rem, 10vw, 5.5rem);
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #ffffff;
+      line-height: 1;
+      margin: 0.5rem 0;
+    }
+
+    /* ── LINKS ── */
+    .links {
+      display: flex;
+      gap: 1rem;
+      margin: 0.6rem 0;
+    }
     .links a {
       display: inline-block;
-      margin: 10px;
-      padding: 12px 24px;
-      border: 2px solid white;
-      border-radius: 10px;
+      padding: 11px 28px;
+      border: 1px solid #444;
+      border-radius: 6px;
       text-decoration: none;
-      color: white;
-      font-weight: bold;
-      transition: 0.2s ease;
+      color: #c8c8c8;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      transition: all 0.2s ease;
+      background: #141414;
+    }
+    .links a:hover {
+      background: #ffffff;
+      border-color: #ffffff;
+      color: #0a0a0a;
     }
 
-    .links a:hover {
-      background: white;
-      color: #0f172a;
+    /* ── SILVER DIVIDER ── */
+    .divider {
+      width: 60px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #888, transparent);
+      margin: 1.4rem auto;
     }
   </style>
 </head>
 <body>
+  <div class="container">
 
-  <h1>Haris Hussain</h1>
+    <!-- 4 stars above name -->
+    <div class="star-row">
+      <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><polygon points="10,1 11.9,7.2 18.5,7.2 13.3,11.2 15.2,17.4 10,13.4 4.8,17.4 6.7,11.2 1.5,7.2 8.1,7.2" fill="#CC0000" stroke="#880000" stroke-width="0.5"/></svg>
+      <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><polygon points="10,1 11.9,7.2 18.5,7.2 13.3,11.2 15.2,17.4 10,13.4 4.8,17.4 6.7,11.2 1.5,7.2 8.1,7.2" fill="#CC0000" stroke="#880000" stroke-width="0.5"/></svg>
+      <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><polygon points="10,1 11.9,7.2 18.5,7.2 13.3,11.2 15.2,17.4 10,13.4 4.8,17.4 6.7,11.2 1.5,7.2 8.1,7.2" fill="#CC0000" stroke="#880000" stroke-width="0.5"/></svg>
+      <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><polygon points="10,1 11.9,7.2 18.5,7.2 13.3,11.2 15.2,17.4 10,13.4 4.8,17.4 6.7,11.2 1.5,7.2 8.1,7.2" fill="#CC0000" stroke="#880000" stroke-width="0.5"/></svg>
+    </div>
 
-  <div class="links">
-    <a href="travel.html">Travel</a>
-    <a href="career.html">Career</a>
+    <div class="divider"></div>
+
+    <!-- Name -->
+    <div class="name">Haris Hussain</div>
+
+    <!-- Links -->
+    <div class="links">
+      <a href="travel.html">Travel</a>
+      <a href="career.html">Career</a>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- 4 stars below links -->
+    <div class="star-row">
+      <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><polygon points="10,1 11.9,7.2 18.5,7.2 13.3,11.2 15.2,17.4 10,13.4 4.8,17.4 6.7,11.2 1.5,7.2 8.1,7.2" fill="#CC0000" stroke="#880000" stroke-width="0.5"/></svg>
+      <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><polygon points="10,1 11.9,7.2 18.5,7.2 13.3,11.2 15.2,17.4 10,13.4 4.8,17.4 6.7,11.2 1.5,7.2 8.1,7.2" fill="#CC0000" stroke="#880000" stroke-width="0.5"/></svg>
+      <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><polygon points="10,1 11.9,7.2 18.5,7.2 13.3,11.2 15.2,17.4 10,13.4 4.8,17.4 6.7,11.2 1.5,7.2 8.1,7.2" fill="#CC0000" stroke="#880000" stroke-width="0.5"/></svg>
+      <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><polygon points="10,1 11.9,7.2 18.5,7.2 13.3,11.2 15.2,17.4 10,13.4 4.8,17.4 6.7,11.2 1.5,7.2 8.1,7.2" fill="#CC0000" stroke="#880000" stroke-width="0.5"/></svg>
+    </div>
+
   </div>
-
 </body>
 </html>
