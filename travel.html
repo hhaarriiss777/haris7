@@ -64,6 +64,66 @@
       position: relative;
     }
 
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+      margin-bottom: 10px;
+    }
+    .nav-links a {
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: #9a80b8;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: #00e5d6; }
+
+    .tracker-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+    .tracker-card {
+      background: rgba(176,96,255,0.1);
+      border: 1px solid rgba(176,96,255,0.3);
+      border-radius: 10px;
+      padding: 10px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 160px;
+    }
+    .tracker-label {
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #9a80b8;
+    }
+    .tracker-value {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #b060ff;
+      line-height: 1;
+    }
+    .tracker-bar {
+      height: 4px;
+      background: rgba(176,96,255,0.2);
+      border-radius: 2px;
+      overflow: hidden;
+      margin-top: 2px;
+    }
+    .tracker-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #b060ff, #00e5d6);
+      border-radius: 2px;
+      transition: width 0.6s ease;
+    }
+
     button {
       border: 1px solid #4a2a6a;
       background: rgba(255,110,199,0.08);
@@ -224,12 +284,34 @@
 </head>
 <body>
   <header>
+    <div class="nav-links">
+      <a href="index.html">← Home</a>
+      <a href="career.html">Career</a>
+    </div>
     <h1>Trips</h1>
     <p>Click a dot to see photos and notes. Turn on selection mode to fine-tune your visited counties.</p>
+
+    <div class="tracker-row" style="margin-top:14px;">
+      <div class="tracker-card">
+        <span class="tracker-label">National Parks</span>
+        <span class="tracker-value" id="parkCount">13 / 63</span>
+        <div class="tracker-bar"><div class="tracker-fill" id="parkBar" style="width:20.6%"></div></div>
+      </div>
+      <div class="tracker-card">
+        <span class="tracker-label">States Visited</span>
+        <span class="tracker-value" id="stateCount">— / 50</span>
+        <div class="tracker-bar"><div class="tracker-fill" id="stateBar" style="width:0%"></div></div>
+      </div>
+      <div class="tracker-card">
+        <span class="tracker-label">Counties Visited</span>
+        <span class="tracker-value" id="countPill">0</span>
+        <div class="tracker-bar"><div class="tracker-fill" id="countyBar" style="width:0%"></div></div>
+      </div>
+    </div>
+
     <div id="topbar">
       <button id="toggleSelectionBtn">Enable selection mode</button>
       <button id="copyBtn">Copy county list</button>
-      <div class="pill" id="countPill">Visited counties: 0</div>
     </div>
   </header>
 
@@ -352,8 +434,36 @@
       highlightedLocations.map(loc => [loc.countyId, loc])
     );
 
+    // FIPS prefix → state name map (lower 48 + DC + HI + AK)
+    const fipsToState = {
+      "01":"Alabama","02":"Alaska","04":"Arizona","05":"Arkansas","06":"California",
+      "08":"Colorado","09":"Connecticut","10":"Delaware","11":"DC","12":"Florida",
+      "13":"Georgia","15":"Hawaii","16":"Idaho","17":"Illinois","18":"Indiana",
+      "19":"Iowa","20":"Kansas","21":"Kentucky","22":"Louisiana","23":"Maine",
+      "24":"Maryland","25":"Massachusetts","26":"Michigan","27":"Minnesota",
+      "28":"Mississippi","29":"Missouri","30":"Montana","31":"Nebraska","32":"Nevada",
+      "33":"New Hampshire","34":"New Jersey","35":"New Mexico","36":"New York",
+      "37":"North Carolina","38":"North Dakota","39":"Ohio","40":"Oklahoma",
+      "41":"Oregon","42":"Pennsylvania","44":"Rhode Island","45":"South Carolina",
+      "46":"South Dakota","47":"Tennessee","48":"Texas","49":"Utah","50":"Vermont",
+      "51":"Virginia","53":"Washington","54":"West Virginia","55":"Wisconsin","56":"Wyoming"
+    };
+
     function updateCount() {
-      countPill.textContent = `Visited counties: ${selectedCountyIds.size}`;
+      const total = selectedCountyIds.size;
+      // Counties
+      document.getElementById("countPill").textContent = total;
+      document.getElementById("countyBar").style.width = Math.min((total / 3143) * 100, 100) + "%";
+
+      // States — derive from FIPS prefix of visited county IDs
+      const visitedStates = new Set();
+      selectedCountyIds.forEach(id => {
+        const prefix = String(id).slice(0, 2);
+        if (fipsToState[prefix]) visitedStates.add(prefix);
+      });
+      const stateCount = visitedStates.size;
+      document.getElementById("stateCount").textContent = `${stateCount} / 50`;
+      document.getElementById("stateBar").style.width = ((stateCount / 50) * 100) + "%";
     }
 
     function renderSidebar(data) {
@@ -395,10 +505,10 @@
       const countyId = getCountyId(feature);
       const visited = selectedCountyIds.has(String(countyId));
       return {
-        color: "#1a0d2e",
+        color: "#b060ff",
         weight: 0.8,
-        fillColor: visited ? "#b060ff" : "#1e1030",
-        fillOpacity: visited ? 0.65 : 0.5
+        fillColor: visited ? "#40c8ff" : "#1e1030",
+        fillOpacity: visited ? 0.55 : 0.5
       };
     }
 
@@ -452,7 +562,7 @@
           }
         },
         mouseover: (e) => {
-          e.target.setStyle({ weight: 2, color: "#ff6ec7" });
+          e.target.setStyle({ weight: 2, color: "#ff6ec7", fillOpacity: 0.8 });
         },
         mouseout: (e) => {
           geojsonLayer.resetStyle(e.target);
