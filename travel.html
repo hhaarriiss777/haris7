@@ -559,10 +559,15 @@
           }).addTo(map);
           marker.bindTooltip(location.label, { direction: "top", offset: [0, -11] });
           marker.on("click", function() {
-            document.getElementById("sidebar").innerHTML =
-              '<h2 class="county-title">' + location.label + '</h2>' +
-              '<div class="meta">Featured stop</div>' +
-              '<p class="empty">One of your featured cities or parks. Add photos whenever you\'re ready.</p>';
+            const info = visitedCountyData[location.countyId];
+  if (info) {
+    renderSidebar(info);
+  } else {
+    document.getElementById("sidebar").innerHTML =
+      '<h2 class="county-title">' + location.label + '</h2>' +
+      '<div class="meta">Featured stop</div>' +
+      '<p class="empty">One of your featured cities or parks. Add photos whenever you\'re ready.</p>';
+  }
           });
         });
 
