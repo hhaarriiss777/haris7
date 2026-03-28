@@ -1,1 +1,714 @@
-"visitedCountyIds": ["04005", "04013", "04015", "04021", "04025", "06003", "06005", "06009", "06017", "06027", "06043", "06051", "06057", "06061", "06067", "06071", "06073", "06077", "06099", "06109", "08001", "08003", "08005", "08007", "08013", "08019", "08023", "08031", "08035", "08037", "08041", "08045", "08047", "08055", "08059", "08067", "08077", "08079", "08083", "08085", "08091", "08101", "08105", "08111", "08117", "09003", "11001", "12001", "12023", "12047", "12057", "12069", "12081", "12083", "12095", "12103", "12105", "12119", "13015", "13021", "13035", "13047", "13063", "13067", "13075", "13081", "13083", "13089", "13093", "13121", "13129", "13151", "13153", "13171", "13185", "13207", "13225", "13277", "13287", "13313", "15009", "17007", "17019", "17029", "17031", "17035", "17037", "17041", "17043", "17049", "17051", "17053", "17055", "17063", "17069", "17075", "17077", "17081", "17089", "17091", "17093", "17097", "17099", "17103", "17105", "17107", "17111", "17113", "17115", "17117", "17119", "17121", "17123", "17139", "17141", "17147", "17151", "17165", "17167", "17197", "17199", "17201", "17203", "18005", "18011", "18019", "18023", "18039", "18071", "18073", "18081", "18087", "18089", "18091", "18097", "18105", "18109", "18127", "18141", "18143", "18151", "18157", "18181", "21009", "21029", "21067", "21073", "21093", "21099", "21111", "21125", "21151", "21203", "21209", "21211", "21213", "21227", "21235", "21239", "24001", "24003", "24017", "24033", "24510", "26005", "26009", "26021", "26025", "26027", "26055", "26075", "26077", "26081", "26089", "26107", "26109", "26117", "26121", "26133", "26139", "26149", "26159", "26161", "26163", "26165", "27003", "27053", "27123", "27163", "29055", "29071", "29077", "29097", "29105", "29109", "29145", "29161", "29169", "29183", "29189", "29225", "29510", "32003", "32005", "32023", "32031", "32510", "36005", "36009", "36013", "36029", "36047", "36061", "36063", "36081", "37173", "39007", "39035", "39043", "39095", "39123", "39171", "40019", "40027", "40035", "40037", "40049", "40081", "40085", "40087", "40097", "40099", "40109", "40115", "40131", "40143", "42003", "42019", "42039", "42049", "42085", "42101", "42111", "42129", "44003", "44005", "44007", "44009", "45051", "47001", "47009", "47013", "47031", "47035", "47037", "47061", "47065", "47093", "47105", "47115", "47141", "47145", "47147", "47149", "47155", "47159", "47189", "48027", "48029", "48039", "48085", "48091", "48097", "48113", "48121", "48139", "48157", "48201", "48209", "48217", "48309", "48397", "48439", "48453", "48491", "49011", "49017", "49021", "49029", "49035", "49043", "49053", "51013", "51015", "51043", "51047", "51059", "51061", "51069", "51079", "51107", "51113", "51139", "51153", "51157", "51165", "51177", "51179", "51187", "51510", "51600", "51610", "51630", "51660", "51683", "51685", "51790", "51820", "54003", "54065", "55001", "55009", "55015", "55021", "55025", "55027", "55029", "55033", "55035", "55039", "55053", "55055", "55057", "55059", "55061", "55071", "55075", "55079", "55081", "55083", "55087", "55089", "55101", "55105", "55109", "55111", "55117", "55127", "55131", "55133", "55139"],
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Trips — Haris Hussain</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: 'DM Sans', Arial, sans-serif; background: #0a0a0a; color: #f0f0f0; }
+    header { padding: 18px 24px 14px; background: #0a0a0a; border-bottom: 1px solid #2a2a2a; text-align: center; position: relative; }
+    header::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, transparent, #ffffff, #888, #ffffff, transparent); opacity: 0.4; }
+    .nav-links { display: flex; gap: 2rem; justify-content: center; margin-bottom: 12px; }
+    .nav-links a { font-size: 0.78rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; color: #666; transition: color 0.2s; }
+    .nav-links a:hover { color: #ffffff; }
+    header h1 { margin: 0 0 4px; font-family: 'Rajdhani', sans-serif; font-size: 2rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #ffffff; }
+    header p { margin: 0 auto; color: #666; font-size: 0.85rem; max-width: 500px; }
+    .tracker-row { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin: 14px auto 0; max-width: 600px; }
+    .tracker-card { background: #141414; border: 1px solid #2a2a2a; border-radius: 10px; padding: 10px 20px; display: flex; flex-direction: column; gap: 4px; min-width: 150px; text-align: center; }
+    .tracker-label { font-size: 0.68rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: #555; }
+    .tracker-value { font-family: 'Rajdhani', sans-serif; font-size: 1.5rem; font-weight: 700; color: #ffffff; line-height: 1; }
+    .tracker-bar { height: 3px; background: #2a2a2a; border-radius: 2px; overflow: hidden; margin-top: 4px; }
+    .tracker-fill { height: 100%; background: linear-gradient(90deg, #ffffff, #888); border-radius: 2px; transition: width 0.6s ease; }
+    #topbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: center; margin-top: 12px; }
+    button { border: 1px solid #333; background: #141414; color: #c8c8c8; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 13px; font-family: 'DM Sans', sans-serif; font-weight: 500; letter-spacing: 0.03em; transition: all 0.2s; }
+    button:hover { background: #222; border-color: #ffffff; color: #ffffff; }
+    #layout { display: grid; grid-template-columns: 2fr 1fr; height: calc(100vh - 215px); }
+    #map { height: 100%; width: 100%; min-height: 500px; }
+    #sidebar { background: #0e0e0e; border-left: 1px solid #222; padding: 20px; overflow-y: auto; text-align: center; }
+    #sidebar::before { content: ''; display: block; height: 2px; background: linear-gradient(90deg, transparent, #ffffff, #888, transparent); margin: -20px -20px 18px; opacity: 0.4; }
+    .county-title { margin-top: 0; font-family: 'Rajdhani', sans-serif; font-size: 1.4rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #ffffff; }
+    .meta { color: #666; font-size: 12px; margin-bottom: 14px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; }
+    .gallery { display: grid; grid-template-columns: 1fr; gap: 12px; }
+    .gallery img { width: 100%; border-radius: 8px; display: block; border: 1px solid #222; }
+    .caption { font-size: 13px; color: #555; margin-top: 6px; }
+    .empty { color: #444; line-height: 1.7; font-size: 0.88rem; }
+    .location-badge { display: inline-block; background: #141414; border: 1px solid #2a2a2a; color: #666; border-radius: 999px; padding: 4px 12px; font-size: 11px; font-weight: 500; margin: 8px 0; letter-spacing: 0.06em; text-transform: uppercase; }
+    .location-list { margin: 8px 0 0; padding-left: 0; list-style: none; color: #444; line-height: 1.8; font-size: 0.82rem; }
+    .leaflet-tooltip { background: #111 !important; border: 1px solid #333 !important; color: #e0e0e0 !important; font-family: 'DM Sans', sans-serif !important; font-size: 12px !important; border-radius: 4px !important; box-shadow: 0 2px 8px rgba(0,0,0,0.6) !important; padding: 4px 8px !important; }
+    .leaflet-tooltip-tip { display: none !important; }
+    #sidebar::-webkit-scrollbar { width: 5px; }
+    #sidebar::-webkit-scrollbar-track { background: #0a0a0a; }
+    #sidebar::-webkit-scrollbar-thumb { background: #2a2a2a; border-radius: 3px; }
+    @media (max-width: 900px) {
+      #layout { grid-template-columns: 1fr; grid-template-rows: 55vh auto; height: auto; }
+      #sidebar { border-left: none; border-top: 1px solid #222; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="nav-links">
+      <a href="index.html">← Home</a>
+      <a href="career.html">Career</a>
+    </div>
+    <h1>Trips</h1>
+    <p>Click a star to see notes. Enable selection mode to fine-tune visited counties.</p>
+    <div class="tracker-row">
+      <div class="tracker-card">
+        <span class="tracker-label">National Parks</span>
+        <span class="tracker-value">13 / 63</span>
+        <div class="tracker-bar"><div class="tracker-fill" style="width:20.6%"></div></div>
+      </div>
+      <div class="tracker-card">
+        <span class="tracker-label">States Visited</span>
+        <span class="tracker-value" id="stateCount">— / 50</span>
+        <div class="tracker-bar"><div class="tracker-fill" id="stateBar" style="width:0%"></div></div>
+      </div>
+      <div class="tracker-card">
+        <span class="tracker-label">Counties</span>
+        <span class="tracker-value" id="countPill">0</span>
+        <div class="tracker-bar"><div class="tracker-fill" id="countyBar" style="width:0%"></div></div>
+      </div>
+    </div>
+    <div id="topbar">
+      <button id="toggleSelectionBtn">Enable selection mode</button>
+      <button id="copyBtn">Copy county list</button>
+    </div>
+  </header>
+
+  <div id="layout">
+    <div id="map"></div>
+    <aside id="sidebar">
+      <h2 class="county-title">Welcome</h2>
+      <p class="empty">Click a ✦ star to see details for that stop.<br/><br/>Enable selection mode to mark counties visited or unvisited.</p>
+      <div class="location-badge">Featured trip stops</div>
+      <ul class="location-list">
+        <li>✦ Stars mark major cities &amp; parks</li>
+        <li>Light blue = counties visited</li>
+        <li>Copy county list to export data</li>
+      </ul>
+    </aside>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+
+    // ================================================================
+    // PHOTO DATA — add entries here for each location with photos
+    // ================================================================
+    const visitedCountyData = {
+      "51113": {
+        name: "Shenandoah",
+        date: "10/15/2025",
+        notes: "Post birthday trip after a nice Bears Dub 🐻",
+        photos: [
+          { src: "Photos/shenandoah1.jpeg", caption: "" },
+          { src: "Photos/shenandoah2.jpeg", caption: "" },
+          { src: "Photos/shenandoah3.jpeg", caption: "" }
+        ]
+      },
+      "06073": {
+    name: "San Diego",
+    date: "02/06/2026",
+    notes: "Superbowl watch party- S/O Kenneth Walker",
+    photos: [
+      { src: "Photos/SanDeigo1JPG.JPG", caption: "" },
+      { src: "Photos/SanDeigo2.jpeg", caption: "" },
+      { src: "Photos/SanDeigo3.jpeg", caption: "" }
+    ]
+  },
+  "06043": {
+    name: "Yosemite",
+    date: "05/30/2024",
+    notes: "Most gorgeous valley- S/O Hetch Hetchy ",
+    photos: [
+      { src: "Photos/Yosemite1.jpeg", caption: "" },
+      { src: "Photos/Yosemite2.jpeg", caption: "" },
+      { src: "Photos/Yosemite3.jpeg", caption: "" }
+    ]
+  },
+  "06017": {
+    name: "Lake Tahoe",
+    date: "06/01/2024",
+    notes: "Seirras are so breathtaking",
+    photos: [
+      { src: "Photos/LakeTahoe1.jpeg", caption: "" },
+      { src: "Photos/LakeTahoe2.jpeg", caption: "" },
+      { src: "Photos/LakeTahoe3.jpeg", caption: "" }
+    ]
+  }
+      
+    };
+
+    // ================================================================
+    // COUNTY LIST — when you click "Copy county list" and get new JSON,
+    // replace ONLY the lines between the [ and ] below with your new list
+    // ================================================================
+    const savedCounties = {
+  "visitedCountyIds": [
+    "04005",
+    "04013",
+    "04015",
+    "04021",
+    "04025",
+    "06003",
+    "06005",
+    "06009",
+    "06017",
+    "06027",
+    "06043",
+    "06051",
+    "06057",
+    "06061",
+    "06067",
+    "06071",
+    "06073",
+    "06077",
+    "06099",
+    "06109",
+    "08001",
+    "08003",
+    "08005",
+    "08007",
+    "08013",
+    "08019",
+    "08023",
+    "08031",
+    "08035",
+    "08037",
+    "08041",
+    "08045",
+    "08047",
+    "08055",
+    "08059",
+    "08067",
+    "08077",
+    "08079",
+    "08083",
+    "08085",
+    "08091",
+    "08101",
+    "08105",
+    "08111",
+    "08117",
+    "09003",
+    "11001",
+    "12001",
+    "12023",
+    "12047",
+    "12057",
+    "12069",
+    "12081",
+    "12083",
+    "12095",
+    "12103",
+    "12105",
+    "12119",
+    "13015",
+    "13021",
+    "13035",
+    "13047",
+    "13063",
+    "13067",
+    "13075",
+    "13081",
+    "13083",
+    "13089",
+    "13093",
+    "13121",
+    "13129",
+    "13151",
+    "13153",
+    "13171",
+    "13185",
+    "13207",
+    "13225",
+    "13277",
+    "13287",
+    "13313",
+    "15009",
+    "17007",
+    "17019",
+    "17029",
+    "17031",
+    "17035",
+    "17037",
+    "17041",
+    "17043",
+    "17049",
+    "17051",
+    "17053",
+    "17055",
+    "17063",
+    "17069",
+    "17075",
+    "17077",
+    "17081",
+    "17089",
+    "17091",
+    "17093",
+    "17097",
+    "17099",
+    "17103",
+    "17105",
+    "17107",
+    "17111",
+    "17113",
+    "17115",
+    "17117",
+    "17119",
+    "17121",
+    "17123",
+    "17139",
+    "17141",
+    "17147",
+    "17151",
+    "17165",
+    "17167",
+    "17197",
+    "17199",
+    "17201",
+    "17203",
+    "18005",
+    "18011",
+    "18019",
+    "18023",
+    "18039",
+    "18071",
+    "18073",
+    "18081",
+    "18087",
+    "18089",
+    "18091",
+    "18097",
+    "18105",
+    "18109",
+    "18127",
+    "18141",
+    "18143",
+    "18151",
+    "18157",
+    "18181",
+    "21009",
+    "21029",
+    "21067",
+    "21073",
+    "21093",
+    "21099",
+    "21111",
+    "21125",
+    "21151",
+    "21203",
+    "21209",
+    "21211",
+    "21213",
+    "21227",
+    "21235",
+    "21239",
+    "24001",
+    "24003",
+    "24017",
+    "24033",
+    "24510",
+    "26005",
+    "26009",
+    "26021",
+    "26025",
+    "26027",
+    "26055",
+    "26075",
+    "26077",
+    "26081",
+    "26089",
+    "26107",
+    "26109",
+    "26117",
+    "26121",
+    "26133",
+    "26139",
+    "26149",
+    "26159",
+    "26161",
+    "26163",
+    "26165",
+    "27003",
+    "27053",
+    "27123",
+    "27163",
+    "29055",
+    "29071",
+    "29077",
+    "29097",
+    "29105",
+    "29109",
+    "29145",
+    "29161",
+    "29169",
+    "29183",
+    "29189",
+    "29225",
+    "29510",
+    "32003",
+    "32005",
+    "32023",
+    "32031",
+    "32510",
+    "36005",
+    "36009",
+    "36013",
+    "36029",
+    "36047",
+    "36061",
+    "36063",
+    "36081",
+    "37173",
+    "39007",
+    "39035",
+    "39043",
+    "39095",
+    "39123",
+    "39171",
+    "40019",
+    "40027",
+    "40035",
+    "40037",
+    "40049",
+    "40081",
+    "40085",
+    "40087",
+    "40097",
+    "40099",
+    "40109",
+    "40115",
+    "40131",
+    "40143",
+    "42003",
+    "42019",
+    "42039",
+    "42049",
+    "42085",
+    "42101",
+    "42111",
+    "42129",
+    "44003",
+    "44005",
+    "44007",
+    "44009",
+    "45051",
+    "47001",
+    "47009",
+    "47013",
+    "47031",
+    "47035",
+    "47037",
+    "47061",
+    "47065",
+    "47093",
+    "47105",
+    "47115",
+    "47141",
+    "47145",
+    "47147",
+    "47149",
+    "47155",
+    "47159",
+    "47189",
+    "48027",
+    "48029",
+    "48039",
+    "48085",
+    "48091",
+    "48097",
+    "48113",
+    "48121",
+    "48139",
+    "48157",
+    "48201",
+    "48209",
+    "48217",
+    "48309",
+    "48397",
+    "48439",
+    "48453",
+    "48491",
+    "49011",
+    "49017",
+    "49021",
+    "49029",
+    "49035",
+    "49043",
+    "49053",
+    "51013",
+    "51015",
+    "51043",
+    "51047",
+    "51059",
+    "51061",
+    "51069",
+    "51079",
+    "51107",
+    "51113",
+    "51139",
+    "51153",
+    "51157",
+    "51165",
+    "51177",
+    "51179",
+    "51187",
+    "51510",
+    "51600",
+    "51610",
+    "51630",
+    "51660",
+    "51683",
+    "51685",
+    "51790",
+    "51820",
+    "54003",
+    "54065",
+    "55001",
+    "55009",
+    "55015",
+    "55021",
+    "55025",
+    "55027",
+    "55029",
+    "55033",
+    "55035",
+    "55039",
+    "55053",
+    "55055",
+    "55057",
+    "55059",
+    "55061",
+    "55071",
+    "55075",
+    "55079",
+    "55081",
+    "55083",
+    "55087",
+    "55089",
+    "55101",
+    "55105",
+    "55109",
+    "55111",
+    "55117",
+    "55127",
+    "55131",
+    "55133",
+    "55139"
+  ]
+}
+
+    const initialVisitedCountyIds = savedCounties.visitedCountyIds;
+
+    // ================================================================
+    // MAP SETUP
+    // ================================================================
+    const map = L.map("map");
+    map.fitBounds([[24.5,-125.0],[49.5,-66.5]]);
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 18, attribution: "&copy; OpenStreetMap contributors"
+    }).addTo(map);
+
+    let selectionMode = false;
+    const selectedCountyIds = new Set(initialVisitedCountyIds);
+
+    const highlightedLocations = [
+      { countyId:"32003", label:"Las Vegas",               lat:36.1699, lng:-115.1398 },
+      { countyId:"48113", label:"Dallas",                  lat:32.7767, lng:-96.7970  },
+      { countyId:"48453", label:"Austin",                  lat:30.2672, lng:-97.7431  },
+      { countyId:"48201", label:"Houston",                 lat:29.7604, lng:-95.3698  },
+      { countyId:"06073", label:"San Diego",               lat:32.7157, lng:-117.1611 },
+      { countyId:"06043", label:"Yosemite",                lat:37.7456, lng:-119.5936 },
+      { countyId:"06027", label:"Death Valley",            lat:36.5323, lng:-116.9325 },
+      { countyId:"15009", label:"Maui",                    lat:20.7984, lng:-156.3319 },
+      { countyId:"06017", label:"Lake Tahoe",              lat:38.9399, lng:-119.9772 },
+      { countyId:"49053", label:"Zion National Park",      lat:37.2982, lng:-113.0263 },
+      { countyId:"49017", label:"Bryce Canyon",            lat:37.5930, lng:-112.1871 },
+      { countyId:"47155", label:"Smoky Mountains",         lat:35.6118, lng:-83.4895  },
+      { countyId:"09003", label:"Hartford",                lat:41.7658, lng:-72.6734  },
+      { countyId:"44005", label:"Newport",                 lat:41.4901, lng:-71.3128  },
+      { countyId:"44007", label:"Providence",              lat:41.8240, lng:-71.4128  },
+      { countyId:"36061", label:"NYC",                     lat:40.7831, lng:-73.9712  },
+      { countyId:"42101", label:"Philly",                  lat:39.9526, lng:-75.1652  },
+      { countyId:"24510", label:"Baltimore",               lat:39.2904, lng:-76.6122  },
+      { countyId:"11001", label:"DC",                      lat:38.9072, lng:-77.0369  },
+      { countyId:"51113", label:"Shenandoah",              lat:38.5308, lng:-78.4350  },
+      { countyId:"45051", label:"Myrtle Beach",            lat:33.6891, lng:-78.8867  },
+      { countyId:"12095", label:"Orlando",                 lat:28.5383, lng:-81.3792  },
+      { countyId:"12057", label:"Tampa Bay",               lat:27.9506, lng:-82.4572  },
+      { countyId:"55111", label:"Devil's Lake",            lat:43.4189, lng:-89.7323  },
+      { countyId:"55009", label:"Green Bay",               lat:44.5133, lng:-88.0133  },
+      { countyId:"27053", label:"Minneapolis",             lat:44.9778, lng:-93.2650  },
+      { countyId:"26055", label:"Traverse City",           lat:44.7631, lng:-85.6206  },
+      { countyId:"13121", label:"Atlanta",                 lat:33.7490, lng:-84.3880  },
+      { countyId:"04025", label:"Sedona",                  lat:34.8697, lng:-111.7610 },
+      { countyId:"04005", label:"Grand Canyon",            lat:36.1069, lng:-112.1129 },
+      { countyId:"04013", label:"Phoenix",                 lat:33.4484, lng:-112.0740 },
+      { countyId:"55079", label:"Milwaukee",               lat:43.0389, lng:-87.9065  },
+      { countyId:"49035", label:"Salt Lake City",          lat:40.7608, lng:-111.8910 },
+      { countyId:"08083", label:"Mesa Verde",              lat:37.2309, lng:-108.4618 },
+      { countyId:"08085", label:"Black Canyon",            lat:38.5754, lng:-107.7416 },
+      { countyId:"08031", label:"Denver",                  lat:39.7392, lng:-104.9903 },
+      { countyId:"08041", label:"Colorado Springs",        lat:38.8339, lng:-104.8214 },
+      { countyId:"36063", label:"Niagara Falls",           lat:43.0962, lng:-79.0377  },
+      { countyId:"17031", label:"Chicago",                 lat:41.8781, lng:-87.6298  },
+      { countyId:"08013", label:"Boulder",                 lat:40.0150, lng:-105.2705 },
+      { countyId:"17069", label:"Shawnee National Forest", lat:37.6064, lng:-88.6731  }
+    ];
+
+    const highlightedByCountyId = Object.fromEntries(
+      highlightedLocations.map(loc => [loc.countyId, loc])
+    );
+
+    // Chicago flag 6-pointed star
+    function chicagoStarIcon(size) {
+      size = size || 16;
+      const cx = size / 2, cy = size / 2;
+      const r1 = size * 0.47, r2 = size * 0.20;
+      const pts = [];
+      for (let i = 0; i < 6; i++) {
+        const a1 = (Math.PI / 3) * i - Math.PI / 2;
+        const a2 = a1 + Math.PI / 6;
+        pts.push((cx + r1 * Math.cos(a1)).toFixed(2) + "," + (cy + r1 * Math.sin(a1)).toFixed(2));
+        pts.push((cx + r2 * Math.cos(a2)).toFixed(2) + "," + (cy + r2 * Math.sin(a2)).toFixed(2));
+      }
+      const svg = '<svg xmlns="http://www.w3.org/2000/svg" width="' + size + '" height="' + size + '">'
+        + '<polygon points="' + pts.join(" ") + '" fill="#CC0000" stroke="#880000" stroke-width="0.5"/>'
+        + '</svg>';
+      return L.divIcon({ html: svg, className: "", iconSize: [size, size], iconAnchor: [size/2, size/2], tooltipAnchor: [0, -size/2-3] });
+    }
+
+    const fipsToState = {
+      "01":"Alabama","02":"Alaska","04":"Arizona","05":"Arkansas","06":"California",
+      "08":"Colorado","09":"Connecticut","10":"Delaware","11":"DC","12":"Florida",
+      "13":"Georgia","15":"Hawaii","16":"Idaho","17":"Illinois","18":"Indiana",
+      "19":"Iowa","20":"Kansas","21":"Kentucky","22":"Louisiana","23":"Maine",
+      "24":"Maryland","25":"Massachusetts","26":"Michigan","27":"Minnesota",
+      "28":"Mississippi","29":"Missouri","30":"Montana","31":"Nebraska","32":"Nevada",
+      "33":"New Hampshire","34":"New Jersey","35":"New Mexico","36":"New York",
+      "37":"North Carolina","38":"North Dakota","39":"Ohio","40":"Oklahoma",
+      "41":"Oregon","42":"Pennsylvania","44":"Rhode Island","45":"South Carolina",
+      "46":"South Dakota","47":"Tennessee","48":"Texas","49":"Utah","50":"Vermont",
+      "51":"Virginia","53":"Washington","54":"West Virginia","55":"Wisconsin","56":"Wyoming"
+    };
+
+    function updateCount() {
+      const total = selectedCountyIds.size;
+      document.getElementById("countPill").textContent = total;
+      document.getElementById("countyBar").style.width = Math.min((total / 3143) * 100, 100) + "%";
+      const visitedStates = new Set();
+      selectedCountyIds.forEach(id => { const p = String(id).slice(0,2); if (fipsToState[p]) visitedStates.add(p); });
+      const sc = visitedStates.size;
+      document.getElementById("stateCount").textContent = sc + " / 50";
+      document.getElementById("stateBar").style.width = ((sc / 50) * 100) + "%";
+    }
+
+    function renderSidebar(data) {
+      const photosHtml = (data.photos || []).map(p =>
+        '<div><img src="' + p.src + '" alt="' + (p.caption || data.name) + '"/>' +
+        (p.caption ? '<div class="caption">' + p.caption + '</div>' : '') + '</div>'
+      ).join("");
+      document.getElementById("sidebar").innerHTML =
+        '<h2 class="county-title">' + data.name + '</h2>' +
+        '<div class="meta">' + (data.date || "") + '</div>' +
+        '<p style="color:#888;font-size:0.9rem;margin-bottom:12px;">' + (data.notes || "") + '</p>' +
+        '<div class="gallery">' + (photosHtml || '<p class="empty">No photos yet.</p>') + '</div>';
+    }
+
+    function getCountyId(feature) {
+      return feature.properties?.GEOID || feature.properties?.GEOID10 ||
+             feature.properties?.FIPS  || feature.properties?.id || feature.id;
+    }
+
+    function getCountyName(feature) {
+      const c = feature.properties?.NAME || "County";
+      const s = feature.properties?.STATE_NAME || feature.properties?.STATE || "";
+      return s ? c + ", " + s : c;
+    }
+
+    function styleFeature(feature) {
+      const visited = selectedCountyIds.has(String(getCountyId(feature)));
+      return { color: "transparent", weight: 0, fillColor: visited ? "#40c8ff" : "transparent", fillOpacity: visited ? 0.5 : 0 };
+    }
+
+    let geojsonLayer;
+
+    function onEachFeature(feature, layer) {
+      const countyId    = String(getCountyId(feature));
+      const countyLabel = getCountyName(feature);
+      layer.bindTooltip(countyLabel);
+      layer.on({
+        click: () => {
+          if (selectionMode) {
+            if (selectedCountyIds.has(countyId)) selectedCountyIds.delete(countyId);
+            else selectedCountyIds.add(countyId);
+            geojsonLayer.resetStyle();
+            updateCount();
+            document.getElementById("sidebar").innerHTML =
+              '<h2 class="county-title">' + countyLabel + '</h2>' +
+              '<p class="empty">' + (selectedCountyIds.has(countyId) ? "Marked visited." : "Marked unvisited.") + '</p>';
+            return;
+          }
+          const info = visitedCountyData[countyId];
+          if (info) { renderSidebar(info); }
+          else if (highlightedByCountyId[countyId]) {
+            const place = highlightedByCountyId[countyId];
+            document.getElementById("sidebar").innerHTML =
+              '<h2 class="county-title">' + place.label + '</h2><div class="meta">Featured stop</div>' +
+              '<p class="empty">One of your major trip locations. Add photos whenever you\'re ready.</p>';
+          } else {
+            document.getElementById("sidebar").innerHTML =
+              '<h2 class="county-title">' + countyLabel + '</h2><p class="empty">No photos added yet.</p>';
+          }
+        },
+        mouseover: (e) => { e.target.setStyle({ fillColor: "#40c8ff", fillOpacity: 0.35 }); },
+        mouseout:  (e) => { geojsonLayer.resetStyle(e.target); }
+      });
+    }
+
+    document.getElementById("toggleSelectionBtn").addEventListener("click", function() {
+      selectionMode = !selectionMode;
+      this.textContent = selectionMode ? "Disable selection mode" : "Enable selection mode";
+    });
+
+    document.getElementById("copyBtn").addEventListener("click", async () => {
+      const text = JSON.stringify({ visitedCountyIds: Array.from(selectedCountyIds).sort() }, null, 2);
+      try {
+        await navigator.clipboard.writeText(text);
+        alert("Copied! In your travel.html, find the savedCounties block and replace ONLY the lines between the [ and ] with your new list.");
+      } catch { alert("Copy failed. Try a different browser."); }
+    });
+
+    fetch("./counties.geojson")
+      .then(r => { if (!r.ok) throw new Error(); return r.json(); })
+      .then(counties => {
+        geojsonLayer = L.geoJSON(counties, { style: styleFeature, onEachFeature: onEachFeature }).addTo(map);
+        highlightedLocations.forEach(function(location) {
+          const marker = L.marker([location.lat, location.lng], { icon: chicagoStarIcon(16) }).addTo(map);
+          marker.bindTooltip(location.label, { direction: "top", offset: [0, -11] });
+          marker.on("click", function() {
+            const info = visitedCountyData[location.countyId];
+            if (info) { renderSidebar(info); }
+            else {
+              document.getElementById("sidebar").innerHTML =
+                '<h2 class="county-title">' + location.label + '</h2><div class="meta">Featured stop</div>' +
+                '<p class="empty">One of your featured cities or parks. Add photos whenever you\'re ready.</p>';
+            }
+          });
+        });
+        updateCount();
+      })
+      .catch(() => {
+        document.getElementById("sidebar").innerHTML =
+          '<h2 class="county-title">Map could not load</h2>' +
+          '<p class="empty">counties.geojson not found. Make sure it\'s in the same folder as this file.</p>';
+      });
+  </script>
+</body>
+</html>
